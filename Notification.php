@@ -22,6 +22,7 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
   public function init()
     {
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
+    $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
 
     $this->enableWebAPI($this->moduleName);
     }//end init
@@ -37,6 +38,22 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
       $moduleWebroot.'/index',
       $baseUrl.'/modules/'.$this->moduleName.'/public/images/slicerpackages.png'));
     }
+
+  /**
+   * When an item is deleted, we must delete associated package records
+   */
+  public function itemDeleted($args)
+    {
+    $itemDao = $args['item'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $packageModel = $modelLoader->loadModel('Package', 'slicerpackages');
+    $package = $packageModel->getByItemId($itemDao->getKey());
+
+    if($package)
+      {
+      $packageModel->delete($package);
+      }
+    }
   } //end class
-  
+
 ?>

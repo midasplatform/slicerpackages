@@ -21,7 +21,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
    * @param exactmatches Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
    * @return Array of SlicerpackagesDao
    */
-  function get($exactmatches = array('os' =>'any', 'arch' => 'any', 
+  function get($exactmatches = array('os' => 'any', 'arch' => 'any', 
                                      'submissiontype' => 'any', 'packagetype' => 'any'))
     {
     $sql = $this->database->select();
@@ -29,7 +29,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
       {
       if(array_key_exists($option, $exactmatches) && $exactmatches[$option] != "any")
         {
-        $sql->where("$option = ?", $exactmatches[$option]);
+        $sql->where($option.' = ?', $exactmatches[$option]);
         }
       }
     $rowset = $this->database->fetchAll($sql);
