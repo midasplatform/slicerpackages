@@ -127,18 +127,17 @@ class Slicerpackages_ApiComponent extends AppComponent
   /**
    * Get all available slicer packages
    * @param os (Optional) The target operating system of the package
-   * @param arch (Optional) The os chip architecture (i386, amd64, etc) 
+   * @param arch (Optional) The os chip architecture (i386, amd64, etc)
    * @param submissiontype (Optional) Whether this is from a nightly, experimental, continuous, etc dashboard
    * @param packagetype (Optional) Installer, data, extension, etc
    * @return An array of slicer packages
    */
   public function getPackages($args)
     {
-    
     $modelLoad = new MIDAS_ModelLoader();
     $model = $modelLoad->loadModel('Package', 'slicerpackages');
     $model->loadDaoClass('PackageDao', 'slicerpackages');
-    
+
     $exactmatches = $args;
     $daos = $model->get($exactmatches);
 

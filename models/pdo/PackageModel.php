@@ -21,7 +21,7 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
    * @param exactmatches Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
    * @return Array of SlicerpackagesDao
    */
-  function get($exactmatches = array('os' => 'any', 'arch' => 'any', 
+  function get($exactmatches = array('os' => 'any', 'arch' => 'any',
                                      'submissiontype' => 'any', 'packagetype' => 'any'))
     {
     $sql = $this->database->select();

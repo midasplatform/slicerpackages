@@ -58,7 +58,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
         foreach($folder->getFolders() as $subFolder)
           {
           $this->view->packageSets[$subFolder->getName()] = array();
-          foreach( $subFolder->getItems() as $item )
+          foreach($subFolder->getItems() as $item )
             {
             $package = $this->Slicerpackages_Package->getByItemId($item->getKey());
             if($package)
@@ -126,6 +126,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
     exit();
     }
 
+  /** action for /advanced (the package search page) */
   public function advancedAction()
     {
     $this->view->header = $this->_breadcrumb("advanced", "Search");
