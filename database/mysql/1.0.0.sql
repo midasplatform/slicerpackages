@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS `slicerpackages_package` (
   `submissiontype` varchar(256) NOT NULL,
   `packagetype` varchar(256) NOT NULL,
   PRIMARY KEY (`package_id`)
-) AUTO_INCREMENT=10;
+);

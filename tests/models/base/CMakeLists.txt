@@ -1,1 +1,1 @@
-add_midas_mysql_test( SlicerpackagesPackageModel PackageModelTest.php )
+add_midas_test( SlicerpackagesPackageModel PackageModelTest.php )

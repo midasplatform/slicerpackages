@@ -42,6 +42,12 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
     return $rowsetAnalysed;
     }
 
+  /** get all package records */
+  public function getAll()
+    {
+    return $this->database->getAll('Package', 'slicerpackages');
+    }
+
   /**
    * Return a slicerpackage_Package dao based on an itemId.
    */
