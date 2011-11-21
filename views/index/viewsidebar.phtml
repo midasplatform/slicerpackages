@@ -16,12 +16,6 @@
       echo '      <span>'.$this->t('Search packages').'</span>';
       echo '    </a>';
       echo '  </li>';
-      echo '  <li>';
-      echo '    <a href = "'.$this->webroot.'/'.$this->moduleName.'/stats">';
-      echo '      <img alt = "" src = "'.$this->moduleWebroot.'/public/images/'.$this->moduleName.'_stats.png" />';
-      echo '      <span>'.$this->t('Show download stats').'</span>';
-      echo '    </a>';
-      echo '  </li>';
       ?>
     </ul>
   </div>
@@ -29,9 +23,12 @@
   <div class="sideElementLast feedStats">
     <h1>Stats</h1>
     <?php
-    echo "<ul>";
-    echo "  <li>{$this->nPackages} {$this->t('package')}".(($this->nPackages>1)?'s':'')."</li>";
-    echo "</ul>";
+    if($this->nPackages)
+      {
+      echo "<ul>";
+      echo "  <li>{$this->nPackages} {$this->t('package')}".(($this->nPackages>1)?'s':'')."</li>";
+      echo "</ul>";
+      }
     ?>
   </div>
 </div>
