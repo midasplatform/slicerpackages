@@ -47,7 +47,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
     {
     $this->view->header = $this->_breadcrumb();
 
-    $this->view->nPackages = count($this->Slicerpackages_Package->get());
+    $this->view->nPackages = $this->Slicerpackages_Package->getCountAll();
     $community = $this->Community->getByName('Slicer');
     $folders = $community->getPublicFolder()->getFolders();
     foreach($folders as $folder)
@@ -79,7 +79,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
   /** Admin action */
   public function adminAction()
     {
-    $this->view->nPackages = count($this->Slicerpackages_Package->getAll());
+    $this->view->nPackages = $this->Slicerpackages_Package->getCountAll();
     }
 
   /** Function for creating community and folder hierarchy */
@@ -130,8 +130,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
   public function advancedAction()
     {
     $this->view->header = $this->_breadcrumb("advanced", "Search");
-    //$this->view->packages = $this->Slicerpackages_Package->get();
-    //$this->view->nPackages = count($this->view->packages);
+    $this->view->nPackages = $this->Slicerpackages_Package->getCountAll();
     $community = $this->Community->getByName('Slicer');
     $folders = array();
     foreach($community->getPublicFolder()->getFolders() as $folder)
