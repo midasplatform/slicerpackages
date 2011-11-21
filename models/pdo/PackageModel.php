@@ -18,19 +18,29 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
 {
   /**
    * Return all the record in the table
-   * @param exactmatches Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
+   * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
    * @return Array of SlicerpackagesDao
    */
-  function get($exactmatches = array('os' => 'any', 'arch' => 'any',
-                                     'submissiontype' => 'any', 'packagetype' => 'any'))
+  function get($params = array('os' => 'any', 'arch' => 'any',
+                               'submissiontype' => 'any', 'packagetype' => 'any',
+                               'revision' => 'any'))
     {
     $sql = $this->database->select();
-    foreach(array('os', 'arch', 'submissiontype', 'packagetype') as $option)
+    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision') as $option)
       {
-      if(array_key_exists($option, $exactmatches) && $exactmatches[$option] != "any")
+      if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        $sql->where($option.' = ?', $exactmatches[$option]);
+        $sql->where($option.' = ?', $params[$option]);
         }
+      }
+    if(array_key_exists('order', $params))
+      {
+      $direction = array_key_exists('direction', $params) ? strtoupper($params['direction']) : 'ASC';
+      $sql->order($params['order'].' '.$direction);
+      }
+    if(array_key_exists('limit', $params) && is_numeric($params['limit']) && $params['limit'] > 0)
+      {
+      $sql->limit($params['limit']);
       }
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();

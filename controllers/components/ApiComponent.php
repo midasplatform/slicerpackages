@@ -126,20 +126,24 @@ class Slicerpackages_ApiComponent extends AppComponent
 
   /**
    * Get all available slicer packages
-   * @param os (Optional) The target operating system of the package
-   * @param arch (Optional) The os chip architecture (i386, amd64, etc)
-   * @param submissiontype (Optional) Whether this is from a nightly, experimental, continuous, etc dashboard
-   * @param packagetype (Optional) Installer, data, extension, etc
+   * @param os (Optional) The target operating system of the package (linux | win | macosx)
+   * @param arch (Optional) The os chip architecture (i386 | amd64)
+   * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
+   * @param packagetype (Optional) The package type (installer | data | extension)
+   * @param revision (Optional) The revision of the package
+   * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
+   * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
+   * @param limit (Optional) Limit result count. Must be a positive integer.
    * @return An array of slicer packages
    */
   public function getPackages($args)
     {
     $modelLoad = new MIDAS_ModelLoader();
-    $model = $modelLoad->loadModel('Package', 'slicerpackages');
-    $model->loadDaoClass('PackageDao', 'slicerpackages');
+    $packagesModel = $modelLoad->loadModel('Package', 'slicerpackages');
+    $packagesModel->loadDaoClass('PackageDao', 'slicerpackages');
 
     $exactmatches = $args;
-    $daos = $model->get($exactmatches);
+    $daos = $packagesModel->get($exactmatches);
 
     $results = array();
     foreach($daos as $dao)
@@ -151,7 +155,8 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'revision' => $dao->getRevision(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
-                         'name' => $dao->getItem()->getName());
+                         'name' => $dao->getItem()->getName(),
+                         'bitstreams' => $dao->getBitstreams());
       }
     return $results;
     }
