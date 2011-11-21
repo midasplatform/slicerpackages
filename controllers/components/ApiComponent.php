@@ -134,6 +134,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
    * @param limit (Optional) Limit result count. Must be a positive integer.
+   * @param release (Optional) Only search in the packages that have been marked as Release packages.
    * @return An array of slicer packages
    */
   public function getPackages($args)
@@ -143,8 +144,35 @@ class Slicerpackages_ApiComponent extends AppComponent
     $packagesModel->loadDaoClass('PackageDao', 'slicerpackages');
     $itemModel = $modelLoad->loadModel('Item');
 
-    $exactmatches = $args;
-    $daos = $packagesModel->get($exactmatches);
+    if(array_key_exists('release', $args))
+      {
+      $communityModel = $modelLoad->loadModel('Community');
+      $community = $communityModel->getByName('Slicer');
+      $folders = $community->getPublicFolder()->getFolders();
+      foreach($folders as $folder)
+        {
+        if($folder->getName() == 'Release')
+          {
+          $daos = array();
+          foreach($folder->getFolders() as $subFolder)
+            {
+            foreach($subFolder->getItems() as $item)
+              {
+              $package = $packagesModel->getByItemId($item->getKey());
+              if($package)
+                {
+                $daos[] = $package;
+                }
+              }
+            }
+          break;
+          }
+        }
+      }
+    else
+      {
+      $daos = $packagesModel->get($args);
+      }
 
     $results = array();
     foreach($daos as $dao)
