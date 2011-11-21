@@ -141,6 +141,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     $modelLoad = new MIDAS_ModelLoader();
     $packagesModel = $modelLoad->loadModel('Package', 'slicerpackages');
     $packagesModel->loadDaoClass('PackageDao', 'slicerpackages');
+    $itemModel = $modelLoad->loadModel('Item');
 
     $exactmatches = $args;
     $daos = $packagesModel->get($exactmatches);
@@ -148,6 +149,16 @@ class Slicerpackages_ApiComponent extends AppComponent
     $results = array();
     foreach($daos as $dao)
       {
+      $revision = $itemModel->getLastRevision($dao->getItem());
+      $bitstreams = $revision->getBitstreams();
+      $bitstreamsArray = array();
+      foreach($bitstreams as $bitstream)
+        {
+        $bitstreamsArray[] = array('bitstream_id' => $bitstream->getKey(),
+                                   'name' => $bitstream->getName(),
+                                   'md5' => $bitstream->getChecksum(),
+                                   'size' => $bitstream->getSizebytes());
+        }
       $results[] = array('package_id' => $dao->getKey(),
                          'item_id' => $dao->getItemId(),
                          'os' => $dao->getOs(),
@@ -156,7 +167,8 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
                          'name' => $dao->getItem()->getName(),
-                         'bitstreams' => $dao->getBitstreams());
+                         'date_creation' => $dao->getItem()->getDateCreation(),
+                         'bitstreams' => $bitstreamsArray);
       }
     return $results;
     }
