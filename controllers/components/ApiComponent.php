@@ -125,7 +125,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     }
 
   /**
-   * Get all available slicer packages
+   * Get a filtered list of available Slicer packages
    * @param os (Optional) The target operating system of the package (linux | win | macosx)
    * @param arch (Optional) The os chip architecture (i386 | amd64)
    * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
@@ -134,7 +134,8 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
    * @param limit (Optional) Limit result count. Must be a positive integer.
-   * @param release (Optional) Only search in the packages that have been marked as Release packages.
+   * @param release (Optional) Set to true to return only release packages, or false to return only non-release packages.
+     If not set, it will return both.
    * @return An array of slicer packages
    */
   public function getPackages($args)
@@ -143,6 +144,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     $packagesModel = $modelLoad->loadModel('Package', 'slicerpackages');
     $packagesModel->loadDaoClass('PackageDao', 'slicerpackages');
     $itemModel = $modelLoad->loadModel('Item');
+    $daos = array();
 
     if(array_key_exists('release', $args))
       {
@@ -151,21 +153,35 @@ class Slicerpackages_ApiComponent extends AppComponent
       $folders = $community->getPublicFolder()->getFolders();
       foreach($folders as $folder)
         {
-        if($folder->getName() == 'Release')
+
+        if(strtolower($args['release']) == 'true')
           {
-          $daos = array();
-          foreach($folder->getFolders() as $subFolder)
+          if($folder->getName() == 'Release')
             {
-            foreach($subFolder->getItems() as $item)
+            foreach($folder->getFolders() as $subFolder)
               {
-              $package = $packagesModel->getByItemId($item->getKey());
-              if($package)
+              foreach($subFolder->getItems() as $item)
                 {
-                $daos[] = $package;
+                $package = $packagesModel->getByItemId($item->getKey());
+                if($package)
+                  {
+                  $daos[] = $package;
+                  }
                 }
               }
+            break;
             }
-          break;
+          }
+        else
+          {
+          foreach($folder->getItems() as $item)
+            {
+            $package = $packagesModel->getByItemId($item->getKey());
+            if($package)
+              {
+              $daos[] = $package;
+              }
+            }
           }
         }
       }
