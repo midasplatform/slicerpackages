@@ -187,6 +187,9 @@ class Slicerpackages_ApiComponent extends AppComponent
                                    'md5' => $bitstream->getChecksum(),
                                    'size' => $bitstream->getSizebytes());
         }
+      $parentFolders = $dao->getItem()->getFolders();
+      $parentParent = $parentFolders[0]->getParent();
+      $release = $parentParent->getName() == 'Release' ? 'true' : 'false';
       $results[] = array('package_id' => $dao->getKey(),
                          'item_id' => $dao->getItemId(),
                          'os' => $dao->getOs(),
@@ -194,6 +197,7 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'revision' => $dao->getRevision(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
+                         'release' => $release,
                          'name' => $dao->getItem()->getName(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
                          'bitstreams' => $bitstreamsArray);
