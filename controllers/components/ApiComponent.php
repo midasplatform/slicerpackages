@@ -46,6 +46,9 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param revision The svn or git revision of the installer
    * @param submissiontype Whether this is from a nightly, experimental, continuous, etc dashboard
    * @param packagetype Installer, data, extension, etc
+   * @param productname The product name (Ex: Slicer)
+   * @param codebase The codebase name (Ex: Slicer4)
+   * @param checkoutdate (Optional) The date of the checkout
    * @return Status of the upload
    */
   public function uploadPackage($args)
@@ -56,7 +59,9 @@ class Slicerpackages_ApiComponent extends AppComponent
                             'name',
                             'revision',
                             'submissiontype',
-                            'packagetype'), $args);
+                            'packagetype',
+                            'productname',
+                            'codebase'), $args);
 
     $userDao = $this->_getUser($args);
     if($userDao === false)
@@ -119,6 +124,12 @@ class Slicerpackages_ApiComponent extends AppComponent
     $packageDao->setOs($args['os']);
     $packageDao->setArch($args['arch']);
     $packageDao->setRevision($args['revision']);
+    $packageDao->setProductname($args['productname']);
+    $packageDao->setCodebase($args['codebase']);
+    if(array_key_exists('checkoutdate', $args))
+      {
+      $packageDao->setCheckoutdate($args['checkoutdate']);
+      }
     $packageModel->save($packageDao);
 
     return array('package' => $packageDao);
@@ -130,6 +141,8 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param arch (Optional) The os chip architecture (i386 | amd64)
    * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
    * @param packagetype (Optional) The package type (installer | data | extension)
+   * @param productname (Optional) The product name (Example: Slicer)
+   * @param codebase (Optional) The codebase name (Example: Slicer4)
    * @param revision (Optional) The revision of the package
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
@@ -153,7 +166,6 @@ class Slicerpackages_ApiComponent extends AppComponent
       $folders = $community->getPublicFolder()->getFolders();
       foreach($folders as $folder)
         {
-
         if(strtolower($args['release']) == 'true')
           {
           if($folder->getName() == 'Release')
@@ -215,6 +227,10 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'package' => $dao->getPackagetype(),
                          'release' => $release,
                          'name' => $dao->getItem()->getName(),
+                         'productname' =>$dao->getProductname(),
+                         'codebase' => $dao->getCodebase(),
+                         'foldername' => $parentFolders[0]->getName(),
+                         'checkoutdate' => $dao->getCheckoutdate(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
                          'bitstreams' => $bitstreamsArray);
       }
