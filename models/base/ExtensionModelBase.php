@@ -11,32 +11,36 @@ PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 
 /**
- * Slicepackages Model Base
+ * Slicerpackages Extension Model Base
  */
-abstract class Slicerpackages_PackageModelBase extends Slicerpackages_AppModel
+abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
 {
   /** constructor*/
   public function __construct()
     {
     parent::__construct();
-    $this->_name = 'slicerpackages_package';
-    $this->_key = 'package_id';
+    $this->_name = 'slicerpackages_extension';
+    $this->_key = 'slicerpackages_extension_id';
+
     $this->_mainData = array(
-        'package_id' =>  array('type' => MIDAS_DATA),
+        'slicerpackages_extension_id' => array('type' => MIDAS_DATA),
         'item_id' => array('type' => MIDAS_DATA),
         'os' => array('type' => MIDAS_DATA),
         'arch' => array('type' => MIDAS_DATA),
+        'repository_url' => array('type' => MIDAS_DATA),
         'revision' => array('type' => MIDAS_DATA),
         'submissiontype' => array('type' => MIDAS_DATA),
         'packagetype' => array('type' => MIDAS_DATA),
+        'slicer_revision' => array('type' => MIDAS_DATA),
+        'icon_url' => array('type' => MIDAS_DATA),
+        'release' => array('type' => MIDAS_DATA),
         'productname' => array('type' => MIDAS_DATA),
         'codebase' => array('type' => MIDAS_DATA),
-        'checkoutdate' => array('type' => MIDAS_DATA),
-        'release' => array('type' => MIDAS_DATA),
-        'item' =>  array('type' => MIDAS_MANY_TO_ONE,
-                         'model' => 'Item',
-                         'parent_column' => 'item_id',
-                         'child_column' => 'item_id'),
+        'development_status' => array('type' => MIDAS_DATA),
+        'item' => array('type' => MIDAS_MANY_TO_ONE,
+                        'model' => 'Item',
+                        'parent_column' => 'item_id',
+                        'child_column' => 'item_id'),
       );
     $this->initialize(); // required
     } // end __construct()
@@ -44,4 +48,4 @@ abstract class Slicerpackages_PackageModelBase extends Slicerpackages_AppModel
   public abstract function getAll();
   public abstract function getByItemId($itemId);
 
-} // end class Slicerpackages_PackageModelBase
+} // end class Slicerpackages_ExtensionModelBase

@@ -39,38 +39,14 @@ class Slicerpackages_ApiComponent extends AppComponent
     }
 
   /**
-   * Get the name of the requested dashboard
-   * @param os The target operating system of the package
-   * @param arch The os chip architecture (i386, amd64, etc)
-   * @param name The name of the package (ie installer name)
-   * @param revision The svn or git revision of the installer
-   * @param submissiontype Whether this is from a nightly, experimental, continuous, etc dashboard
-   * @param packagetype Installer, data, extension, etc
-   * @param productname The product name (Ex: Slicer)
-   * @param codebase The codebase name (Ex: Slicer4)
-   * @param checkoutdate (Optional) The date of the checkout
-   * @return Status of the upload
+   * Read in the streamed uploaded file and write it to a temporary file.
+   * Returns the name of the temporary file.
    */
-  public function uploadPackage($args)
+  private function _readUploadedFile($prefix)
     {
     set_time_limit(0);
-    $this->_checkKeys(array('os',
-                            'arch',
-                            'name',
-                            'revision',
-                            'submissiontype',
-                            'packagetype',
-                            'productname',
-                            'codebase'), $args);
-
-    $userDao = $this->_getUser($args);
-    if($userDao === false)
-      {
-      throw new Exception('Invalid user authentication', -1);
-      }
-
     $inputfile = 'php://input';
-    $tmpfile = tempnam(BASE_PATH.'/tmp/misc', 'slicerpackage');
+    $tmpfile = tempnam(BASE_PATH.'/tmp/misc', $prefix);
     $in = fopen($inputfile, 'rb');
     $out = fopen($tmpfile, 'wb');
 
@@ -86,28 +62,67 @@ class Slicerpackages_ApiComponent extends AppComponent
     fclose($in);
     fclose($out);
 
-    $modelLoader = new MIDAS_ModelLoader();
-    $communityModel = $modelLoader->loadModel('Community');
-    $community = $communityModel->getByName('Slicer');
+    return $tmpfile;
+    }
 
-    if(!$community)
+  /**
+   * Upload a core package
+   * @param os The target operating system of the package
+   * @param arch The os chip architecture (i386, amd64, etc)
+   * @param name The name of the package (ie installer name)
+   * @param revision The svn or git revision of the installer
+   * @param submissiontype Whether this is from a nightly, experimental, continuous, etc dashboard
+   * @param packagetype Installer, data, etc
+   * @param productname The product name (Ex: Slicer)
+   * @param codebase The codebase name (Ex: Slicer4)
+   * @param checkoutdate (Optional) The date of the checkout
+   * @return Status of the upload
+   */
+  public function uploadPackage($args)
+    {
+    $this->_checkKeys(array('os',
+                            'arch',
+                            'name',
+                            'revision',
+                            'submissiontype',
+                            'packagetype',
+                            'productname',
+                            'codebase'), $args);
+
+    $userDao = $this->_getUser($args);
+    if($userDao === false)
       {
-      unlink($tmpfile);
-      throw new Exception('The Slicer community does not exist', -1);
+      throw new Exception('Invalid user authentication', -1);
       }
-    $folderModel = $modelLoader->loadModel('Folder');
-    $name = ucfirst($args['submissiontype']);
-    $publicFolder = $folderModel->load($community->getPublicfolderId());
-    $typeFolder = $folderModel->getFolderExists($name, $publicFolder);
 
-    if(!$typeFolder)
+    $tmpfile = $this->_readUploadedFile('slicerpackage');
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $key = 'packages.'.$args['submissiontype'].'.folder';
+    $folderId = getValueByName($key, 'slicerpackages');
+
+    if(!$folderId || !is_numeric($folderId))
       {
       unlink($tmpfile);
-      throw new Exception('Folder '.$name.' does not exist in the Slicer community', -1);
+      throw new Exception('You must configure a folder id for key '.$key, -1);
+      }
+    $folder = $folderModel->load($folderId);
+
+    if(!$folder)
+      {
+      unlink($tmpfile);
+      throw new Exception('Folder with id '.$folderId.' does not exist', -1);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+      {
+      unlink($tmpfile);
+      throw new Exception('Invalid policy on folder '.$folderId, -1);
       }
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
-    $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $typeFolder);
+    $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
     unlink($tmpfile);
 
@@ -136,6 +151,101 @@ class Slicerpackages_ApiComponent extends AppComponent
     }
 
   /**
+   * Upload an extension package
+   * @param os The target operating system of the package
+   * @param arch The os chip architecture (i386, amd64, etc)
+   * @param name The name of the package (ie installer name)
+   * @param repository_url The url of the repository
+   * @param revision The svn or git revision of the extension
+   * @param slicer_revision The revision of Slicer that the extension was built against
+   * @param submissiontype Whether this is from a nightly, experimental, continuous, etc dashboard
+   * @param packagetype Installer, data, etc
+   * @param productname The product name (Ex: Slicer)
+   * @param codebase The codebase name (Ex: Slicer4)
+   * @param icon_url (Optional) The url of the icon for the extension
+   * @param development_status (Optional) Arbitrary description of the status of the extension (stable, active, etc)
+   * @return Status of the upload
+   */
+  public function uploadExtension($args)
+    {
+    $this->_checkKeys(array('os',
+                            'arch',
+                            'name',
+                            'revision',
+                            'repository_url',
+                            'slicer_revision',
+                            'submissiontype',
+                            'packagetype',
+                            'productname',
+                            'codebase'), $args);
+
+    $userDao = $this->_getUser($args);
+    if($userDao === false)
+      {
+      throw new Exception('Invalid user authentication', -1);
+      }
+
+    $tmpfile = $this->_readUploadedFile('slicerextension');
+
+    $modelLoader = new MIDAS_ModelLoader();
+    $settingModel = $modelLoader->loadModel('Setting');
+    $folderModel = $modelLoader->loadModel('Folder');
+    $key = 'extensions.'.$args['submissiontype'].'.folder';
+    $folderId = getValueByName($key, 'slicerpackages');
+
+    if(!$folderId || !is_numeric($folderId))
+      {
+      unlink($tmpfile);
+      throw new Exception('You must configure a folder id for key '.$key, -1);
+      }
+    $folder = $folderModel->load($folderId);
+
+    if(!$folder)
+      {
+      unlink($tmpfile);
+      throw new Exception('Folder with id '.$folderId.' does not exist', -1);
+      }
+    if(!$folderModel->policyCheck($folder, $userDao, MIDAS_POLICY_WRITE))
+      {
+      unlink($tmpfile);
+      throw new Exception('Invalid policy on folder '.$folderId, -1);
+      }
+    $componentLoader = new MIDAS_ComponentLoader();
+    $uploadComponent = $componentLoader->loadComponent('Upload');
+    $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
+
+    unlink($tmpfile);
+
+    if(!$item)
+      {
+      throw new Exception('Failed to create item', -1);
+      }
+    $extensionModel = $modelLoader->loadModel('Extension', 'slicerpackages');
+    $extensionModel->loadDaoClass('ExtensionDao', 'slicerpackages');
+    $extensionDao = new Slicerpackages_ExtensionDao();
+    $extensionDao->setItemId($item->getKey());
+    $extensionDao->setSubmissiontype($args['submissiontype']);
+    $extensionDao->setPackagetype($args['packagetype']);
+    $extensionDao->setOs($args['os']);
+    $extensionDao->setArch($args['arch']);
+    $extensionDao->setRevision($args['revision']);
+    $extensionDao->setSlicerRevision($args['slicer_revision']);
+    $extensionDao->setProductname($args['productname']);
+    $extensionDao->setCodebase($args['codebase']);
+    if(array_key_exists('icon_url', $args))
+      {
+      $packageDao->setIconUrl($args['icon_url']);
+      }
+    if(array_key_exists('development_status', $args))
+      {
+      $packageDao->setDevelopmentStatus($args['development_status']);
+      }
+    $packageModel->save($extensionDao);
+
+    return array('extension' => $extensionDao);
+    }
+
+  /**
    * Get a filtered list of available Slicer packages
    * @param os (Optional) The target operating system of the package (linux | win | macosx)
    * @param arch (Optional) The os chip architecture (i386 | amd64)
@@ -157,50 +267,8 @@ class Slicerpackages_ApiComponent extends AppComponent
     $packagesModel = $modelLoad->loadModel('Package', 'slicerpackages');
     $packagesModel->loadDaoClass('PackageDao', 'slicerpackages');
     $itemModel = $modelLoad->loadModel('Item');
-    $daos = array();
 
-    if(array_key_exists('release', $args))
-      {
-      $communityModel = $modelLoad->loadModel('Community');
-      $community = $communityModel->getByName('Slicer');
-      $folders = $community->getPublicFolder()->getFolders();
-      foreach($folders as $folder)
-        {
-        if(strtolower($args['release']) == 'true')
-          {
-          if($folder->getName() == 'Release')
-            {
-            foreach($folder->getFolders() as $subFolder)
-              {
-              foreach($subFolder->getItems() as $item)
-                {
-                $package = $packagesModel->getByItemId($item->getKey());
-                if($package)
-                  {
-                  $daos[] = $package;
-                  }
-                }
-              }
-            break;
-            }
-          }
-        else
-          {
-          foreach($folder->getItems() as $item)
-            {
-            $package = $packagesModel->getByItemId($item->getKey());
-            if($package)
-              {
-              $daos[] = $package;
-              }
-            }
-          }
-        }
-      }
-    else
-      {
-      $daos = $packagesModel->get($args);
-      }
+    $daos = $packagesModel->get($args);
 
     $results = array();
     foreach($daos as $dao)
@@ -215,9 +283,7 @@ class Slicerpackages_ApiComponent extends AppComponent
                                    'md5' => $bitstream->getChecksum(),
                                    'size' => $bitstream->getSizebytes());
         }
-      $parentFolders = $dao->getItem()->getFolders();
-      $parentParent = $parentFolders[0]->getParent();
-      $release = $parentParent->getName() == 'Release' ? 'true' : 'false';
+
       $results[] = array('package_id' => $dao->getKey(),
                          'item_id' => $dao->getItemId(),
                          'os' => $dao->getOs(),
@@ -229,7 +295,66 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'name' => $dao->getItem()->getName(),
                          'productname' =>$dao->getProductname(),
                          'codebase' => $dao->getCodebase(),
-                         'foldername' => $parentFolders[0]->getName(),
+                         'release' => $dao->getRelease(),
+                         'checkoutdate' => $dao->getCheckoutdate(),
+                         'date_creation' => $dao->getItem()->getDateCreation(),
+                         'bitstreams' => $bitstreamsArray);
+      }
+    return $results;
+    }
+
+  /**
+   * Get a filtered list of available Slicer extensions
+   * @param os (Optional) The target operating system of the package (linux | win | macosx)
+   * @param arch (Optional) The os chip architecture (i386 | amd64)
+   * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
+   * @param packagetype (Optional) The package type (installer | data | extension)
+   * @param productname (Optional) The product name (Example: Slicer)
+   * @param codebase (Optional) The codebase name (Example: Slicer4)
+   * @param revision (Optional) The revision of the package
+   * @param slicer_revision (Optional) The slicer revision the package was built against
+   * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
+   * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
+   * @param limit (Optional) Limit result count. Must be a positive integer.
+   * @param release (Optional) Set to true to return only release packages, or false to return only non-release packages.
+     If not set, it will return both.
+   * @return An array of slicer extension daos
+   */
+  public function getExtensions($args)
+    {
+    $modelLoad = new MIDAS_ModelLoader();
+    $extensionsModel = $modelLoad->loadModel('Extension', 'slicerpackages');
+    $extensionsModel->loadDaoClass('ExtensionDao', 'slicerpackages');
+    $itemModel = $modelLoad->loadModel('Item');
+
+    $daos = $extensionsModel->get($args);
+
+    $results = array();
+    foreach($daos as $dao)
+      {
+      $revision = $itemModel->getLastRevision($dao->getItem());
+      $bitstreams = $revision->getBitstreams();
+      $bitstreamsArray = array();
+      foreach($bitstreams as $bitstream)
+        {
+        $bitstreamsArray[] = array('bitstream_id' => $bitstream->getKey(),
+                                   'name' => $bitstream->getName(),
+                                   'md5' => $bitstream->getChecksum(),
+                                   'size' => $bitstream->getSizebytes());
+        }
+
+      $results[] = array('extension_id' => $dao->getKey(),
+                         'item_id' => $dao->getItemId(),
+                         'os' => $dao->getOs(),
+                         'arch' => $dao->getArch(),
+                         'revision' => $dao->getRevision(),
+                         'submissiontype' => $dao->getSubmissiontype(),
+                         'package' => $dao->getPackagetype(),
+                         'release' => $release,
+                         'name' => $dao->getItem()->getName(),
+                         'productname' =>$dao->getProductname(),
+                         'codebase' => $dao->getCodebase(),
+                         'release' => $dao->getRelease(),
                          'checkoutdate' => $dao->getCheckoutdate(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
                          'bitstreams' => $bitstreamsArray);
