@@ -16,9 +16,9 @@ class Slicerpackages_Upgrade_1_0_1 extends MIDASUpgrade
   public function mysql()
     {
     $this->db->query("ALTER TABLE `slicerpackages_package`
-                      ADD COLUMN `productname` varchar(256) NOT NULL DEFAULT ''");
+                      ADD COLUMN `productname` varchar(255) NOT NULL DEFAULT ''");
     $this->db->query("ALTER TABLE `slicerpackages_package`
-                      ADD COLUMN `codebase` varchar(256) NOT NULL DEFAULT ''");
+                      ADD COLUMN `codebase` varchar(255) NOT NULL DEFAULT ''");
     $this->db->query("ALTER TABLE `slicerpackages_package`
                       ADD COLUMN `checkoutdate` timestamp NULL DEFAULT NULL");
     }
