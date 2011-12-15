@@ -43,8 +43,7 @@ class Slicerpackages_InstallScript extends MIDASModuleInstallScript
     }
 
   /**
-   * Post-install callback creates default api keys
-   * for all existing users
+   * Post-install callback will create the folder structure
    */
   public function postInstall()
     {
@@ -58,7 +57,7 @@ class Slicerpackages_InstallScript extends MIDASModuleInstallScript
 
     if($communityModel->getByName('Slicer'))
       {
-      exit();
+      return;
       }
 
     $community = $communityModel->createCommunity('Slicer',
