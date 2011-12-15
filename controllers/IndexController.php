@@ -82,50 +82,6 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
     $this->view->nPackages = $this->Slicerpackages_Package->getCountAll();
     }
 
-  /** Function for creating community and folder hierarchy */
-  public function createstructureAction()
-    {
-    $this->disableLayout();
-    $this->_helper->viewRenderer->setNoRender();
-    $userDao = $this->userSession->Dao;
-    if($this->Community->getByName('Slicer'))
-      {
-      echo json_encode(array('msg' => 'Slicer Community already created.',
-                             'stat' => 0));
-      exit();
-      }
-    $communityDao = $this->Community->createCommunity('Slicer',
-                                                      'Community for storing slicer packages',
-                                                      MIDAS_COMMUNITY_PUBLIC,
-                                                      $userDao,
-                                                      true);
-
-    $parent = $communityDao->getPublicFolder();
-    $policyGroup = $parent->getFolderpolicygroup();
-    $policyUser = $parent->getFolderpolicyuser();
-
-    $folders = array();
-    $folders[] = $this->Folder->createFolder('Release', 'For Release Builds', $parent);
-    $folders[] = $this->Folder->createFolder('Nightly', 'For Nightly Builds', $parent);
-    $folders[] = $this->Folder->createFolder('Experimental', 'For Experimental Builds', $parent);
-
-    // Copy parent permissions to the new folders
-    foreach($folders as $folder)
-      {
-      foreach($policyGroup as $policy)
-        {
-        $this->Folderpolicygroup->createPolicy($policy->getGroup(), $folder, $policy->getPolicy());
-        }
-      foreach($policyUser as $policy)
-        {
-        $this->Folderpolicyuser->createPolicy($policy->getUser(), $folder, $policy->getPolicy());
-        }
-      }
-    echo json_encode(array('msg' => 'Slicer Community created successfully!',
-                           'stat' => 1));
-    exit();
-    }
-
   /** action for /advanced (the package search page) */
   public function advancedAction()
     {
