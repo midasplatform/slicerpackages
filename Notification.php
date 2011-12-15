@@ -23,6 +23,7 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
     {
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
+    $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
 
     $this->enableWebAPI($this->moduleName);
     }//end init
@@ -37,6 +38,47 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
     return array('Slicer Packages' => array(
       $moduleWebroot.'/index',
       $baseUrl.'/modules/'.$this->moduleName.'/public/images/slicerpackages.png'));
+    }
+
+  /**
+   * Add link to the right hand menu in the item view
+   */
+  public function getItemMenuLink($params)
+    {
+    $item = $params['item'];
+    $modelLoader = new MIDAS_ModelLoader();
+    $itemModel = $modelLoader->loadModel('Item');
+    $packageModel = $modelLoader->loadModel('Package', $this->moduleName);
+    $package = $packageModel->getByItemId($item->getKey());
+
+    if(!$itemModel->policyCheck($item, $this->userSession->Dao, MIDAS_POLICY_ADMIN))
+      {
+      return '';
+      }
+    if($package)
+      {
+      $type = 'package';
+      $id = $package->getKey();
+      }
+    else
+      {
+      $extensionModel = $modelLoader->loadModel('Extension', $this->moduleName);
+      $extension = $extensionModel->getByItemId($item->getKey());
+      if($extension)
+        {
+        $type = 'extension';
+        $id = $extension->getKey();
+        }
+      else
+        {
+        return '';
+        }
+      }
+
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    return '<li><a href="'.$baseUrl.'/'.$this->moduleName.'/manage'.$type.'?id='.$id.
+           '"><img alt="" src="'.$baseUrl.'/modules/'.$this->moduleName.
+           '/public/images/package_go.png" /> '.$this->t('Manage '.$type).'</a></li>';
     }
 
   /**
