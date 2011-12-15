@@ -101,7 +101,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     $settingModel = $modelLoader->loadModel('Setting');
     $folderModel = $modelLoader->loadModel('Folder');
     $key = 'packages.'.$args['submissiontype'].'.folder';
-    $folderId = getValueByName($key, 'slicerpackages');
+    $folderId = $settingModel->getValueByName($key, 'slicerpackages');
 
     if(!$folderId || !is_numeric($folderId))
       {
@@ -191,7 +191,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     $settingModel = $modelLoader->loadModel('Setting');
     $folderModel = $modelLoader->loadModel('Folder');
     $key = 'extensions.'.$args['submissiontype'].'.folder';
-    $folderId = getValueByName($key, 'slicerpackages');
+    $folderId = $settingModel->getValueByName($key, 'slicerpackages');
 
     if(!$folderId || !is_numeric($folderId))
       {
