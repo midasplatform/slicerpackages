@@ -234,13 +234,13 @@ class Slicerpackages_ApiComponent extends AppComponent
     $extensionDao->setCodebase($args['codebase']);
     if(array_key_exists('icon_url', $args))
       {
-      $packageDao->setIconUrl($args['icon_url']);
+      $extensionDao->setIconUrl($args['icon_url']);
       }
     if(array_key_exists('development_status', $args))
       {
-      $packageDao->setDevelopmentStatus($args['development_status']);
+      $extensionDao->setDevelopmentStatus($args['development_status']);
       }
-    $packageModel->save($extensionDao);
+    $extensionModel->save($extensionDao);
 
     return array('extension' => $extensionDao);
     }
