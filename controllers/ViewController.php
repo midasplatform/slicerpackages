@@ -10,7 +10,7 @@ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE.  See the above copyright notices for more information.
 =========================================================================*/
 /** demo controller*/
-class Slicerpackages_IndexController extends Slicerpackages_AppController
+class Slicerpackages_ViewController extends Slicerpackages_AppController
 {
 
   public $_models = array('User', 'Item', 'Folder', 'Community', 'Folderpolicyuser', 'Folderpolicygroup');
@@ -42,7 +42,7 @@ class Slicerpackages_IndexController extends Slicerpackages_AppController
     return $breadcrumb;
     }
 
-  /** index action*/
+  /** index action */
   public function indexAction()
     {
     $this->view->header = $this->_breadcrumb();

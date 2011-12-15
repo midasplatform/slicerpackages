@@ -24,7 +24,7 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
     $this->addCallBack('CALLBACK_CORE_GET_LEFT_LINKS', 'getLeftLinks');
     $this->addCallBack('CALLBACK_CORE_ITEM_DELETED', 'itemDeleted');
     $this->addCallBack('CALLBACK_CORE_ITEM_VIEW_ACTIONMENU', 'getItemMenuLink');
-
+    $this->addCallBack('CALLBACK_CORE_GET_FOOTER_HEADER', 'getHeader');
     $this->enableWebAPI($this->moduleName);
     }//end init
 
@@ -96,6 +96,19 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
       $packageModel->delete($package);
       }
     }
+
+  /**
+   * We use a callback to add the lines to core that we need for view
+   * customization.
+   */
+  public function getHeader()
+    {
+    $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
+    $cssPath = $baseUrl.'/modules/'.$this->moduleName.'/public/css/custom.layout.css';
+    $cssHtml = '<link type="text/css" rel="stylesheet" href="'.$cssPath.'">';
+    return $cssHtml;
+    }
+
   } //end class
 
 ?>
