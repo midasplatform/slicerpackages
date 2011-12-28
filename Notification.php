@@ -36,7 +36,7 @@ class Slicerpackages_Notification extends ApiEnabled_Notification
     $baseUrl = Zend_Controller_Front::getInstance()->getBaseUrl();
     $moduleWebroot = $baseUrl.'/'.$this->moduleName;
     return array('Slicer Packages' => array(
-      $moduleWebroot.'/index',
+      $moduleWebroot.'/view',
       $baseUrl.'/modules/'.$this->moduleName.'/public/images/slicerpackages.png'));
     }
 
