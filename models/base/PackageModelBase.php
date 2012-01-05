@@ -44,9 +44,46 @@ abstract class Slicerpackages_PackageModelBase extends Slicerpackages_AppModel
   public abstract function getAll();
   public abstract function getByItemId($itemId);
 
+  /** Get the last created packages belonging to the provided FolderDaos and matching operatingSystems.
+   * @param Array $folderDaos List of FolderDaos containing the packages to consider.
+   * @return Array Each element is an associative array having the keys 'package_id',
+   * 'item_id' and 'date_creation'
+   *
+   * Note that this method does NOT check if the current user has access to the packages associated
+   * with the provided folders.
+   */
+  abstract function getMostRecentCreatedItem($folderDaos);
+
+  /** Get the last created packages belonging to the provided FolderDaos and matching operatingSystems.
+   * @param Array $folderDaos List of FolderDaos containing the packages to consider.
+   * @param string|array $operatingSystems If no operating system is specified, all operating
+   * systems associated with the provided folderDaos will be considered.
+   * @return Array Each element is an associative array having the keys 'package_id',
+   * 'item_id', 'os' and 'date_creation'
+   *
+   * Note that this method does NOT check if the current user has access to the packages associated
+   * with the provided folders.
+   */
+  abstract function getMostRecentCreatedItemsByOs($folderDaos, $operatingSystems = array());
+
+  /** Get the last created packages belonging to the provided FolderDaos and matching both operatingSystems and architectures.
+   * @param Array $folderDaos List of FolderDaos containing the packages to consider.
+   * @param string|array $operatingSystems If no operating system is specified, all operating
+   * systems associated with the provided folderDaos will be considered.
+   * @param string|array $architectures If no architecture is specified, all architectures
+   * associated with the provided folderDaos will be considered.
+   * @return Array Each element is an associative array having the keys 'package_id',
+   * 'item_id', 'os', 'arch' and 'date_creation'
+   *
+   * Note that this method does NOT check if the current user has access to the packages associated
+   * with the provided folders.
+   */
+  abstract function getMostRecentCreatedItemsByOsAndArch($folderDaos, $operatingSystems = array(), $architectures = array());
+
   /** Get all released packages.
    * @param string|array $releases Optionnal list of releases
    * @return Array Contains packageDaos.
    */
   abstract function getReleasedPackages($folderDaos, $releases = array());
+
 } // end class Slicerpackages_PackageModelBase
