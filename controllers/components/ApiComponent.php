@@ -165,6 +165,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param packagetype Installer, data, etc
    * @param productname The product name (Ex: Slicer)
    * @param codebase The codebase name (Ex: Slicer4)
+   * @param release (Optional) Release identifier (Ex: 0.0.1, 0.0.2, 0.1)
    * @param icon_url (Optional) The url of the icon for the extension
    * @param development_status (Optional) Arbitrary description of the status of the extension (stable, active, etc)
    * @return Status of the upload
@@ -235,6 +236,10 @@ class Slicerpackages_ApiComponent extends AppComponent
     $extensionDao->setSlicerRevision($args['slicer_revision']);
     $extensionDao->setProductname($args['productname']);
     $extensionDao->setCodebase($args['codebase']);
+    if(array_key_exists('release', $args))
+      {
+      $extensionDao->setRelease($args['release']);
+      }
     if(array_key_exists('icon_url', $args))
       {
       $extensionDao->setIconUrl($args['icon_url']);
@@ -294,7 +299,6 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'revision' => $dao->getRevision(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
-                         'release' => $release,
                          'name' => $dao->getItem()->getName(),
                          'productname' =>$dao->getProductname(),
                          'codebase' => $dao->getCodebase(),
@@ -331,8 +335,8 @@ class Slicerpackages_ApiComponent extends AppComponent
     $itemModel = $modelLoad->loadModel('Item');
 
     $daos = $extensionsModel->get($args);
-
     $results = array();
+
     foreach($daos as $dao)
       {
       $revision = $itemModel->getLastRevision($dao->getItem());
@@ -353,7 +357,6 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'revision' => $dao->getRevision(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
-                         'release' => $release,
                          'name' => $dao->getItem()->getName(),
                          'productname' =>$dao->getProductname(),
                          'codebase' => $dao->getCodebase(),
