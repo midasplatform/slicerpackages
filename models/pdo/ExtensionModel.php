@@ -32,7 +32,7 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        $sql->where($option.' = ?', $params[$option]);
+        $sql->where('slicerpackages_extension.'.$option.' = ?', $params[$option]);
         }
       }
     if(array_key_exists('order', $params))
