@@ -362,7 +362,6 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'productname' =>$dao->getProductname(),
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
-                         'checkoutdate' => $dao->getCheckoutdate(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
                          'bitstreams' => $bitstreamsArray);
       }
