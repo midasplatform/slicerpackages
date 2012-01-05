@@ -233,6 +233,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     $extensionDao->setOs($args['os']);
     $extensionDao->setArch($args['arch']);
     $extensionDao->setRevision($args['revision']);
+    $extensionDao->setRepositoryUrl($args['repository_url']);
     $extensionDao->setSlicerRevision($args['slicer_revision']);
     $extensionDao->setProductname($args['productname']);
     $extensionDao->setCodebase($args['codebase']);
