@@ -75,6 +75,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param packagetype Installer, data, etc
    * @param productname The product name (Ex: Slicer)
    * @param codebase The codebase name (Ex: Slicer4)
+   * @param release (Optional) Release identifier (Ex: 4.0.0, 4.2)
    * @param checkoutdate (Optional) The date of the checkout
    * @return Status of the upload
    */
@@ -139,6 +140,10 @@ class Slicerpackages_ApiComponent extends AppComponent
     $packageDao->setRevision($args['revision']);
     $packageDao->setProductname($args['productname']);
     $packageDao->setCodebase($args['codebase']);
+    if(array_key_exists('release', $args))
+      {
+      $packageDao->setRelease($args['release']);
+      }
     if(array_key_exists('checkoutdate', $args))
       {
       $packageDao->setCheckoutdate($args['checkoutdate']);
