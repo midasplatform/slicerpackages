@@ -44,4 +44,9 @@ abstract class Slicerpackages_PackageModelBase extends Slicerpackages_AppModel
   public abstract function getAll();
   public abstract function getByItemId($itemId);
 
+  /** Get all released packages.
+   * @param string|array $releases Optionnal list of releases
+   * @return Array Contains packageDaos.
+   */
+  abstract function getReleasedPackages($folderDaos, $releases = array());
 } // end class Slicerpackages_PackageModelBase

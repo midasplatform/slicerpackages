@@ -70,4 +70,37 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
     return $dao;
     }
 
+  function getReleasedPackages($folderDaos, $releases = array())
+    {
+    if(!is_array($folderDaos))
+      {
+      $folderDaos = array($folderDaos);
+      }
+    if(!is_array($releases))
+      {
+      $releases = array($releases);
+      }
+    $select = $this->database->select()
+                   ->setIntegrityCheck(false)
+                   ->from(array('i' => 'item'), array())
+                   ->join(array('i2f' => 'item2folder'), 'i2f.item_id = i.item_id', array())
+                   ->join(array('f' => 'folder'), 'f.folder_id = i2f.folder_id', array())
+                   ->join(array('sp' => 'slicerpackages_package'), 'sp.item_id = i.item_id');
+
+    if (count($releases) > 0)
+      {
+      $select->where('sp.release IN (?)', $releases);
+      }
+    else
+      {
+      $select->where('sp.release != ""');
+      }
+    $rowset = $this->database->fetchAll($select);
+    $packageDaos = array();
+    foreach($rowset as $row)
+      {
+      $packageDaos[] = $this->initDao('Slicerpackages_Package', $row);
+      }
+    return $packageDaos;
+    }
 }  // end class
