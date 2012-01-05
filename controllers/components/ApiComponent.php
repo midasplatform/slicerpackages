@@ -356,6 +356,7 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'os' => $dao->getOs(),
                          'arch' => $dao->getArch(),
                          'revision' => $dao->getRevision(),
+                         'slicer_revision' => $dao->getSlicerRevision(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
                          'name' => $dao->getItem()->getName(),

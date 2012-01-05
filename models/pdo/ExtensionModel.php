@@ -23,11 +23,12 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
    */
   function get($params = array('os' => 'any', 'arch' => 'any',
                                'submissiontype' => 'any', 'packagetype' => 'any',
-                               'revision' => 'any', 'productname' => 'any',
-                               'codebase' => 'any'))
+                               'slicer_revision' => 'any', 'revision' => 'any',
+                               'productname' => 'any', 'codebase' => 'any',
+                               'release' => 'any'))
     {
     $sql = $this->database->select();
-    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'productname', 'codebase') as $option)
+    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
