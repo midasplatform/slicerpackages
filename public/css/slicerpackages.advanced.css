@@ -1,32 +1,63 @@
+#releaseForm, #slicerRevisionForm {
+  display: inline;
+  float:left;
+}
+
+#slicerRevisionForm {
+  margin-left: 10%;
+}
+
 span.choice {
   display: inline-block;
   width: 10em;
 }
 
-span.choice > span:not([class="any"]), #dataTable td.link a, #dataTable td.os {
+span.choice > label:not([class="noicon"]),
+#dataTable td.link a,
+#dataTable td.os,
+#dataTable td.packagetype
+{
   padding-left: 20px;
   background-repeat: no-repeat;
   background-position: left center;
   vertical-align: middle;
 }
 
-span.choice > span.linux, #dataTable td.linux {
+#dataTable td.submissiontype
+{
+  background-repeat: no-repeat;
+  background-position: center center;
+  vertical-align: middle;
+}
+
+span.choice > label.linux, #dataTable td.linux {
   background-image: url(../images/os_linux.png);
 }
 
-span.choice > span.macosx, #dataTable td.macosx {
+span.choice > label.macosx, #dataTable td.macosx {
   background-image: url(../images/os_macosx.png);
 }
 
-span.choice > span.win, #dataTable td.win {
+span.choice > label.win, #dataTable td.win {
   background-image: url(../images/os_win.png);
+}
+
+span.choice > label.application, #dataTable td.application {
+  background-image: url(../images/slicer_application.png);
+}
+
+span.choice > label.extension, #dataTable td.extension {
+  background-image: url(../images/slicer_extension.png);
 }
 
 #dataTable {
   margin-top: 3em;
 }
 
-#dataTable td.link a {
-  background-image: url(../../../../core/public/images/icons/download.png);
+#dataTable td.experimental {
+  background-image: url(../images/experimental.png);
 }
 
+#dataTable td.nightly {
+  background-image: url(../images/nightly.png);
+}

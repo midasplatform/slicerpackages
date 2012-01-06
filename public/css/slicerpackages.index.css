@@ -1,4 +1,95 @@
 
+div.viewMain h3, .last-updated {
+  padding-top: 1em;
+  margin-bottom: 0px;
+}
+
+#styleswitch {
+  margin-top: 0.5em;
+  float:right;
+}
+
+/* TODO a paragraph class should probably be defined in MIDAS core */
+div.paragraph {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+a.download {
+  font-size: 1.3em !important;
+}
+
+div.versions-container {
+  margin-top: 10px;
+  width: 100%;
+}
+div.versions-container div.packageOS {
+  margin-top: 0.5em;
+  font-weight: bold;
+}
+div.version-arch-container {
+  padding-bottom: 0.8em;
+}
+div.version-info div.version-arch-container:last-child {
+  padding-bottom: 0em;
+}
+div.version-list, div.version-arch-cell {
+  float: left;
+  width: 18%;
+}
+div.version-arch-key {
+  font-weight: bold;
+}
+div.version-info-list > div {
+  display: none;
+}
+div.version-info-selected {
+  display: inline !important;
+}
+div.version-info {
+  float: left;
+  width: 79%;
+  background-color: #c2c2ff;
+  padding: 1.5% 1.5% 1.5% 1.5%;
+}
+div.version-info-cell {
+  width: 100%;
+}
+div.version-info-key {
+  float: left;
+}
+div.version-info-value {
+  float: right;
+  text-align: right;
+}
+div.version-selected {
+  font-weight: bold;
+  background: url(../images/checkmark.png) no-repeat scroll left center transparent;
+  padding-left: 20px !important;
+}
+div.version-highlighted {
+  font-weight: none;
+  color: darkgray;
+}
+div.version-link {
+  width: 100%;
+  padding: 5px 0px 3px 10px;
+  cursor: pointer;
+}
+
+div.linux {
+  background-image:url(../images/os_linux.png);
+}
+
+div.win {
+  background-image:url(../images/os_win.png);
+}
+
+div.macosx {
+  background-image:url(../images/os_macosx.png);
+}
+
+
 /* ReleaseFolder */
 div.releaseFolder {
   clear: left;
@@ -17,7 +108,7 @@ div.releaseFolder > h3 {
 /* package */
 div.packageTile {
   height: 14ex;
-  width: 32%;
+  width: 29%;
   border: 1px dotted #999;
   margin-top: 1ex;
   margin-left: 1ex;
@@ -32,25 +123,13 @@ div.packageOS {
   background-position: left center;
 }
 
-div.linux {
-  background-image:url(../images/os_linux.png);
-}
-
-div.win {
-  background-image:url(../images/os_win.png);
-}
-
-div.macosx {
-  background-image:url(../images/os_macosx.png);
-}
-
 ul.packageLinks  {
   padding-left: 3ex;
   vertical-align: middle;
 }
 
 ul.packageLinks li a {
-  
+
 }
 
 ul.packageLinks li {
