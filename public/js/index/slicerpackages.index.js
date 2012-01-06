@@ -52,7 +52,7 @@ $(document).ready(function() {
   // Add rounded corners
   //
 
-  $('div.version-info-list div.version-info').corner();
+  $('div.version-info').corner();
 
 
   //
