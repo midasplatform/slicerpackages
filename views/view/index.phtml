@@ -80,7 +80,7 @@ $this->headScript()->appendFile(
             echo '      <div class="spacer"></div>';
             };
           echo '    <div class="version-arch-container">';
-          $downloadText = '<a class="download external" href="'.$this->webroot.'/download/?items='.$packageDao->getItemId().'">Download</a>';
+          $downloadText = '<a class="download external" title="MD5 '.$packageChecksum.'" href="'.$this->webroot.'/download/?items='.$packageDao->getItemId().'">Download</a>';
           if($releaseName != $this->latestCategoryText)
             {
             $downloadText .= '&nbsp;<a class="statistics" title="Click to display download statistics" href="'.$this->webroot.'/statistics/item?id='.$packageDao->getItemId().'"></a>';
