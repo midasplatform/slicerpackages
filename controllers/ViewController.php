@@ -83,7 +83,6 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
     {
     if(!$itemDao instanceof ItemDao)
       {
-      $this->getLogger()->warn($packageDao->getOs());
       $itemDaos = $this->Item->findBy('item_id', $packageDao->getItemId());
       $itemDao = $itemDaos[0];
       }
