@@ -55,6 +55,9 @@ div.version-info {
 div.version-info-cell {
   width: 100%;
 }
+div.version-cell-md5 {
+  display: none;
+}
 div.version-info-key {
   float: left;
 }

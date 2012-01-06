@@ -104,4 +104,9 @@ $(document).ready(function() {
     );
 
   });
+
+  $('a.download').click(function() {
+    $(this).parent().parent().parent().find('.version-cell-md5').show();
+  });
+
 });

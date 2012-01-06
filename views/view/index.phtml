@@ -68,16 +68,16 @@ $this->headScript()->appendFile(
           $packageDateCreation = $package['date_creation'];
           $packageLastupdated = $package['lastupdated'];
           $packageExtensionCount = $package['extensioncount'];
-          $echoInfoCell = function($key, $value, $arch = '&nbsp;')
+          $echoInfoCell = function($key, $value, $class = '', $arch = '&nbsp;')
             {
-            echo '      <div class="version-arch-cell">';
+            echo '      <div class="version-arch-cell '.$class.'">';
             echo '        <div class="version-info-key version-arch-key">'.$arch.'</div>';
             echo '      </div>';
-            echo '      <div class="version-info-cell">';
+            echo '      <div class="version-info-cell '.$class.'">';
             echo '        <div class="version-info-key">'.$key.'</div>';
             echo '        <div class="version-info-value">'.$value.'</div>';
             echo '      </div>';
-            echo '      <div class="spacer"></div>';
+            echo '      <div class="spacer '.$class.'"></div>';
             };
           echo '    <div class="version-arch-container">';
           $downloadText = '<a class="download external" title="MD5 '.$packageChecksum.'" href="'.$this->webroot.'/download/?items='.$packageDao->getItemId().'">Download</a>';
@@ -85,9 +85,9 @@ $this->headScript()->appendFile(
             {
             $downloadText .= '&nbsp;<a class="statistics" title="Click to display download statistics" href="'.$this->webroot.'/statistics/item?id='.$packageDao->getItemId().'"></a>';
             }
-          $echoInfoCell('', $downloadText, $archMapping[$arch]);
+          $echoInfoCell('', $downloadText, /* class */ '', $archMapping[$arch]);
+          $echoInfoCell('MD5', $packageChecksum, 'version-cell-md5');
           $echoInfoCell('Size', $packageSize);
-          $echoInfoCell('MD5', $packageChecksum);
           $echoInfoCell('Revision', $packageDao->getRevision());
           if($releaseName == $this->latestCategoryText)
             {
