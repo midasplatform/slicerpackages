@@ -31,8 +31,7 @@ function dataToHtmlTableRows(data, packagetype)
     tablecontent += '    / <a href="' + webroot + '/statistics/item?id=' + val.item_id + '">Stats</a>';
     tablecontent += '  </td>';
     tablecontent += '  <td class="submissiontype ' + submissiontype + '">' + val.release + '</td>';
-    tablecontent += '  <td class="os ' + val.os + '">' + json.slicerpackages.os_shortname_to_longname[val.os] + '</td>';
-    tablecontent += '  <td>' + json.slicerpackages.arch_shortname_to_longname[val.arch] + '</td>';
+    tablecontent += '  <td class="os ' + val.os + '" os="' + json.slicerpackages.os_shortname_to_longname[val.os] + '">' + json.slicerpackages.arch_shortname_to_longname[val.arch] + '</td>';
     tablecontent += '  <td>' + revision + '</td>';
     tablecontent += '</tr>';
   });
@@ -130,7 +129,15 @@ function fillDataTable(os, arch, /*buildtype,*/ packagetype, slicer_revision, re
 
 $(document).ready(function() {
 
-  $('#dataTable').tablesorter();
+  $('#dataTable').tablesorter({ // define a custom text extraction function
+    textExtraction: function(node) {
+      if($(node).hasClass('os'))
+        {
+        return $(node).attr('os') + node.innerHTML;
+        }
+      return node.innerHTML;
+    }
+  });
 
   //
   // Set default value
