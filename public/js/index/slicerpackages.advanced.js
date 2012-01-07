@@ -131,6 +131,10 @@ $(document).ready(function() {
 
   $('#dataTable').tablesorter({ // define a custom text extraction function
     textExtraction: function(node) {
+      if($(node).hasClass('packagetype'))
+        {
+        return $(node).find('.external').text();
+        }
       if($(node).hasClass('os'))
         {
         return $(node).attr('os') + node.innerHTML;
