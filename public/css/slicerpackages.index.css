@@ -67,8 +67,8 @@ div.version-info-value {
 }
 div.version-selected {
   font-weight: bold;
-  background: url(../images/checkmark.png) no-repeat scroll left center transparent;
   padding-left: 20px !important;
+  background-color: #c2c2ff;
 }
 div.version-highlighted {
   font-weight: none;

@@ -53,6 +53,7 @@ $(document).ready(function() {
   //
 
   $('div.version-info').corner();
+  $('div.version-link').corner();
 
 
   //
