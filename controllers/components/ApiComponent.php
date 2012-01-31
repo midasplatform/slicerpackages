@@ -312,6 +312,34 @@ class Slicerpackages_ApiComponent extends AppComponent
     }
 
   /**
+   * Get a list of release identifiers associated with the Slicer packages
+   * @param direction (Optional) What direction to order results by (asc | desc).  Default desc
+   * @return An array of release identifiers
+   */
+  public function getReleaseIdentifiers($args)
+    {
+    $userDao = $this->_getUser($args);
+    if($userDao === false)
+      {
+      throw new Exception('Invalid user authentication', -1);
+      }
+
+    $componentLoader = new MIDAS_ComponentLoader();
+    $utlityComponent = $componentLoader->loadComponent('Utility', 'slicerpackages');
+
+    $folderDaos = array(
+      $utlityComponent->getPackageFolder($userDao, 'Package', 'nightly'),
+      $utlityComponent->getPackageFolder($userDao, 'Package', 'experimental'));
+
+    $desc = true;
+    if(array_key_exists('order', $args))
+      {
+      $desc = $args['order'] == 'asc' ? false : true;
+      }
+    return $utlityComponent->getReleaseIdentifiers($folderDaos, $desc);
+    }
+
+  /**
    * Get a filtered list of available Slicer extensions
    * @param os (Optional) The target operating system of the package (linux | win | macosx)
    * @param arch (Optional) The os chip architecture (i386 | amd64)

@@ -18,7 +18,7 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
   public $_daos = array('User', 'Bitstream', 'Item', 'Folder', 'Community');
   public $_moduleDaos = array('Package', 'Extension');
   public $_components = array('Date', 'Utility');
-  public $_moduleComponents = array();
+  public $_moduleComponents = array('Utility');
   public $_forms = array();
   public $_moduleForms = array();
 
@@ -178,23 +178,6 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
       }
     }
 
-  private function _getApplicationReleaseNames($folderDaos)
-    {
-    if(!is_array($folderDaos))
-      {
-      $folderDaos = array($folderDaos);
-      }
-    $packagetype = 'Package';
-    $instanceName = ucfirst($this->moduleName).'_'.$packagetype;
-    $packageModel = $this->$instanceName;
-
-    $packageDaos = $packageModel->getReleasedPackages($folderDaos);
-    $releaseNames = array_unique(array_map(function($packageDao){ return $packageDao->getRelease(); }, $packageDaos));
-
-    usort($releaseNames, 'version_compare');
-    return array_reverse($releaseNames, true);
-    }
-
   private function _initializeOsAndArchMap($moduleName, $view)
     {
     $view->json[$moduleName]['latest_category_text'] = self::LatestCategoryText;
@@ -292,7 +275,7 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
     $folderDaos = array(
       $this->_getPackageFolder('Package', 'nightly'),
       $this->_getPackageFolder('Package', 'experimental'));
-    $this->view->releaseNames = $this->_getApplicationReleaseNames($folderDaos);
+    $this->view->releaseNames = $this->ModuleComponent->Utility->getReleaseIdentifiers($folderDaos);
     $this->view->releaseNames[] = self::LatestCategoryText;
 
     $this->view->header = $this->_breadcrumb("advanced", "Additional Download");
