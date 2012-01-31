@@ -263,11 +263,11 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param productname (Optional) The product name (Example: Slicer)
    * @param codebase (Optional) The codebase name (Example: Slicer4)
    * @param revision (Optional) The revision of the package
+   * @param release (Optional) Release identifier associated with a package.
+   If not set, it will return both released and non-released packages.
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
    * @param limit (Optional) Limit result count. Must be a positive integer.
-   * @param release (Optional) Set to true to return only release packages, or false to return only non-release packages.
-     If not set, it will return both.
    * @return An array of slicer packages
    */
   public function getPackages($args)
@@ -321,11 +321,11 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param codebase (Optional) The codebase name (Example: Slicer4)
    * @param revision (Optional) The revision of the package
    * @param slicer_revision (Optional) The slicer revision the package was built against
+   * @param release (Optional) Release identifier associated with a package.
+   If not set, it will return both released and non-released packages.
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
    * @param limit (Optional) Limit result count. Must be a positive integer.
-   * @param release (Optional) Set to true to return only release packages, or false to return only non-release packages.
-     If not set, it will return both.
    * @return An array of slicer extension daos
    */
   public function getExtensions($args)
