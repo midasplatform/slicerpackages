@@ -84,7 +84,7 @@ function fillDataTable(os, arch, /*buildtype,*/ packagetype, slicer_revision, re
       var getPackagesParameters = parameters;
       if(slicer_revision != '') { getPackagesParameters+= '&revision=' + slicer_revision; }
       ajaxWebApi.ajax({
-        method: 'midas.slicerpackages.get.packages',
+        method: 'midas.slicerpackages.package.list',
         args: getPackagesParameters,
         complete: function() {
           $("#dataTableLoading").hide();
@@ -103,7 +103,7 @@ function fillDataTable(os, arch, /*buildtype,*/ packagetype, slicer_revision, re
       var getExtensionsParameters = parameters;
       if(slicer_revision != '') { getExtensionsParameters+= '&slicer_revision=' + slicer_revision; }
       ajaxWebApi.ajax({
-        method: 'midas.slicerpackages.get.extensions',
+        method: 'midas.slicerpackages.extension.list',
         args: getExtensionsParameters,
         complete: function() {
           $("#dataTableLoading").hide();
