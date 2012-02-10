@@ -103,7 +103,8 @@ $this->headScript()->appendFile(
             $queryArray[] = 'os=' . urlencode($packageDao->getOs());
             $queryArray[] = 'arch=' . urlencode($packageDao->getArch());
             $queryArray[] = 'slicer_revision=' . urlencode($packageDao->getRevision());
-            $queryArray[] = 'release=' . urlencode($packageDao->getRelease());
+            $release = $packageDao->getRelease() != '' ? $packageDao->getRelease() : 'any';
+            $queryArray[] = 'release=' . urlencode($release);
             $queryArray[] = 'packagetype=any';
             $listExtensionUrl = $this->webroot.'/'.$this->moduleName.'/view/advanced';
             $listExtensionUrl .= '?' . implode('&', $queryArray);
