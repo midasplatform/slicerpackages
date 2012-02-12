@@ -188,8 +188,6 @@ class Slicerpackages_ApiComponent extends AppComponent
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
-    unlink($tmpfile);
-
     if(!$item)
       {
       throw new Exception('Failed to create item', -1);
