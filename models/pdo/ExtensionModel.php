@@ -19,16 +19,17 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
   /**
    * Return all the records in the table
    * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
+                   Can also specify 'order', 'direction', 'limit', and 'offset'.
    * @return Array of Slicer extension Daos
    */
   function get($params = array('os' => 'any', 'arch' => 'any',
                                'submissiontype' => 'any', 'packagetype' => 'any',
                                'slicer_revision' => 'any', 'revision' => 'any',
                                'productname' => 'any', 'codebase' => 'any',
-                               'release' => 'any'))
+                               'release' => 'any', 'category' => 'any'))
     {
     $sql = $this->database->select();
-    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release') as $option)
+    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release', 'category') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
@@ -42,7 +43,8 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       }
     if(array_key_exists('limit', $params) && is_numeric($params['limit']) && $params['limit'] > 0)
       {
-      $sql->limit($params['limit']);
+      $offset = isset($params['offset']) ? $params['offset'] : 0;
+      $sql->limit($params['limit'], $offset);
       }
     $rowset = $this->database->fetchAll($sql);
     $rowsetAnalysed = array();

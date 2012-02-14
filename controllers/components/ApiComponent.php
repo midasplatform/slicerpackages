@@ -138,6 +138,8 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param release (Optional) Release identifier (Ex: 0.0.1, 0.0.2, 0.1)
    * @param icon_url (Optional) The url of the icon for the extension
    * @param development_status (Optional) Arbitrary description of the status of the extension (stable, active, etc)
+   * @param category (Optional) Category under which to place the extension. Subcategories should be delimited by . character.
+                                If none is passed, will render under the Miscellaneous category.
    * @return Status of the upload
    */
   public function extensionUpload($args)
@@ -216,6 +218,10 @@ class Slicerpackages_ApiComponent extends AppComponent
     if(array_key_exists('development_status', $args))
       {
       $extensionDao->setDevelopmentStatus($args['development_status']);
+      }
+    if(array_key_exists('category', $args))
+      {
+      $extensionDao->setCategory($args['category']);
       }
     $extensionModel->save($extensionDao);
 
