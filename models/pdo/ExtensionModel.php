@@ -18,22 +18,29 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
 {
   /**
    * Return all the records in the table
-   * @param params Optional associative array specifying an 'os', 'arch', 'submissiontype' and 'packagetype'.
-                   Can also specify 'order', 'direction', 'limit', and 'offset'.
+   * @param params Optional associative array specifying 'extension_id', 'os', 'arch',
+   *               'submissiontype', 'packagetype', 'slicer_revision', 'revision',
+   *               'productname', 'codebase', 'release' and 'category'.
+   *               Can also specify 'order', 'direction', 'limit', and 'offset'.
    * @return Array of Slicer extension Daos
    */
-  function get($params = array('os' => 'any', 'arch' => 'any',
+  function get($params = array('extension_id' => 'any', 'os' => 'any', 'arch' => 'any',
                                'submissiontype' => 'any', 'packagetype' => 'any',
                                'slicer_revision' => 'any', 'revision' => 'any',
                                'productname' => 'any', 'codebase' => 'any',
                                'release' => 'any', 'category' => 'any'))
     {
     $sql = $this->database->select();
-    foreach(array('os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release', 'category') as $option)
+    foreach(array('extension_id', 'os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release', 'category') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        $sql->where('slicerpackages_extension.'.$option.' = ?', $params[$option]);
+        $fieldname = $option;
+        if($option == 'extension_id')
+          {
+          $fieldname = 'slicerpackages_' . $option;
+          }
+        $sql->where('slicerpackages_extension.'.$fieldname.' = ?', $params[$option]);
         }
       }
     if(array_key_exists('order', $params))

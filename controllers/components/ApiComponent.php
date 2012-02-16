@@ -67,6 +67,7 @@ class Slicerpackages_ApiComponent extends AppComponent
 
   /**
    * Get a filtered list of available Slicer extensions
+   * @param extension_id (Optional) The extension id
    * @param os (Optional) The target operating system of the package (linux | win | macosx)
    * @param arch (Optional) The os chip architecture (i386 | amd64)
    * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
