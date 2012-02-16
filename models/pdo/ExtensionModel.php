@@ -18,6 +18,7 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
 {
   /**
    * Return all the records in the table
+<<<<<<< Updated upstream
    * @param params Optional associative array specifying 'extension_id', 'os', 'arch',
    *               'submissiontype', 'packagetype', 'slicer_revision', 'revision',
    *               'productname', 'codebase', 'release' and 'category'.
@@ -35,12 +36,20 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        $fieldname = $option;
-        if($option == 'extension_id')
+        if($option == 'category') //category searches by prefix
           {
-          $fieldname = 'slicerpackages_' . $option;
+          $sql->where("slicerpackages_extension.category = '".$params['category']
+                      ."' OR slicerpackages_extension.category LIKE '".$params['category'].".%'");
           }
-        $sql->where('slicerpackages_extension.'.$fieldname.' = ?', $params[$option]);
+        else
+          {
+          $fieldname = $option;
+          if($option == 'extension_id')
+            {
+            $fieldname = 'slicerpackages_' . $option;
+            }
+          $sql->where('slicerpackages_extension.'.$fieldname.' = ?', $params[$option]);
+          }
         }
       }
     if(array_key_exists('order', $params))
@@ -80,4 +89,39 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
     return $dao;
     }
 
+  /**
+   * Return a list of all distinct categories
+   */
+  public function getAllCategories()
+    {
+    $sql = $this->database->select()
+                ->from(array('e' => 'slicerpackages_extension'), array('category'))
+                ->where('category != ?', '')
+                ->distinct();
+    $categories = array();
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $row)
+      {
+      $categories[] = $row['category'];
+      }
+    return $categories;
+    }
+
+  /**
+   * Return a list of all distinct releases
+   */
+  public function getAllReleases()
+    {
+    $sql = $this->database->select()
+                ->from(array('e' => 'slicerpackages_extension'), array('release'))
+                ->where('e.release != ?', '')
+                ->distinct();
+    $releases = array();
+    $rowset = $this->database->fetchAll($sql);
+    foreach($rowset as $row)
+      {
+      $releases[] = $row['release'];
+      }
+    return $releases;
+    }
 }  // end class

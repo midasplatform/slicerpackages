@@ -48,5 +48,7 @@ abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
 
   public abstract function getAll();
   public abstract function getByItemId($itemId);
+  public abstract function getAllCategories();
+  public abstract function getAllReleases();
 
 } // end class Slicerpackages_ExtensionModelBase
