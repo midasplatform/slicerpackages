@@ -18,7 +18,6 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
 {
   /**
    * Return all the records in the table
-<<<<<<< Updated upstream
    * @param params Optional associative array specifying 'extension_id', 'os', 'arch',
    *               'submissiontype', 'packagetype', 'slicer_revision', 'revision',
    *               'productname', 'codebase', 'release' and 'category'.
