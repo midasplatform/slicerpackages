@@ -73,6 +73,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param submissiontype (Optional) Dashboard model used to submit (nightly | experimental | continuous)
    * @param packagetype (Optional) The package type (installer | data | extension)
    * @param productname (Optional) The product name (Example: Slicer)
+   * @param category (Optional) The category (Example: Segmentation, Diffusion.Denoising)
    * @param codebase (Optional) The codebase name (Example: Slicer4)
    * @param revision (Optional) The revision of the package
    * @param slicer_revision (Optional) The slicer revision the package was built against
@@ -108,7 +109,8 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
                          'name' => $dao->getItem()->getName(),
-                         'productname' =>$dao->getProductname(),
+                         'productname' => $dao->getProductname(),
+                         'category' => $dao->getCategory(),
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
