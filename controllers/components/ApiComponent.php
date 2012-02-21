@@ -114,6 +114,8 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'productname' => $dao->getProductname(),
                          'category' => $dao->getCategory(),
                          'description' => $dao->getDescription(),
+                         'screenshots' => $dao->getScreenshots(),
+                         'contributors' => $dao->getContributors(),
                          'homepage' => $dao->getDescription(),
                          'enabled' => $dao->getEnabled(),
                          'codebase' => $dao->getCodebase(),
@@ -149,6 +151,8 @@ class Slicerpackages_ApiComponent extends AppComponent
                                 If none is passed, will render under the Miscellaneous category.
    * @param enabled (Optional) Boolean indicating if the extension should be automatically enabled after its installation
    * @param homepage (Optional) The url of the extension homepage
+   * @param screenshots (Optional) Space-separate list of URLs of screenshots for the extension
+   * @param contributors (Optional) List of contributors of the extension
    * @return Status of the upload
    */
   public function extensionUpload($args)
@@ -243,6 +247,14 @@ class Slicerpackages_ApiComponent extends AppComponent
     if(array_key_exists('homepage', $args))
       {
       $extensionDao->setHomepage($args['homepage']);
+      }
+    if(array_key_exists('screenshots', $args))
+      {
+      $extensionDao->setScreenshots($args['screenshots']);
+      }
+    if(array_key_exists('contributors', $args))
+      {
+      $extensionDao->setContributors($args['contributors']);
       }
 
     $extensionModel->save($extensionDao);

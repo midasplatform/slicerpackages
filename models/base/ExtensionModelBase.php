@@ -42,6 +42,8 @@ abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
         'description' => array('type' => MIDAS_DATA),
         'enabled' => array('type' => MIDAS_DATA),
         'homepage' => array('type' => MIDAS_DATA),
+        'screenshots' => array('type' => MIDAS_DATA),
+        'contributors' => array('type' => MIDAS_DATA),
         'item' => array('type' => MIDAS_MANY_TO_ONE,
                         'model' => 'Item',
                         'parent_column' => 'item_id',
