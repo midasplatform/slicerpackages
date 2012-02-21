@@ -97,14 +97,7 @@ class Slicerpackages_ApiComponent extends AppComponent
       {
       $revision = $itemModel->getLastRevision($dao->getItem());
       $bitstreams = $revision->getBitstreams();
-      $bitstreamsArray = array();
-      foreach($bitstreams as $bitstream)
-        {
-        $bitstreamsArray[] = array('bitstream_id' => $bitstream->getKey(),
-                                   'name' => $bitstream->getName(),
-                                   'md5' => $bitstream->getChecksum(),
-                                   'size' => $bitstream->getSizebytes());
-        }
+      $bitstream = $bitstreams[0];
 
       $results[] = array('extension_id' => $dao->getKey(),
                          'item_id' => $dao->getItemId(),
@@ -119,7 +112,11 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
-                         'bitstreams' => $bitstreamsArray);
+                         'bitstream_id' => $bitstream->getKey(),
+                         'name' => $bitstream->getName(),
+                         'md5' => $bitstream->getChecksum(),
+                         'size' => $bitstream->getSizebytes()
+                         );
       }
     return $results;
     }
