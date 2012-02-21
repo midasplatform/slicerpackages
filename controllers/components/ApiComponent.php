@@ -106,11 +106,16 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'arch' => $dao->getArch(),
                          'revision' => $dao->getRevision(),
                          'slicer_revision' => $dao->getSlicerRevision(),
+                         'repository_type' => $dao->getRepositoryType(),
+                         'repository_url' => $dao->getRepositoryUrl(),
                          'submissiontype' => $dao->getSubmissiontype(),
                          'package' => $dao->getPackagetype(),
                          'name' => $dao->getItem()->getName(),
                          'productname' => $dao->getProductname(),
                          'category' => $dao->getCategory(),
+                         'description' => $dao->getDescription(),
+                         'homepage' => $dao->getDescription(),
+                         'enabled' => $dao->getEnabled(),
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
                          'date_creation' => $dao->getItem()->getDateCreation(),
@@ -128,6 +133,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param os The target operating system of the package
    * @param arch The os chip architecture (i386, amd64, etc)
    * @param name The name of the package (ie installer name)
+   * @param repository_type The type of the repository (svn, git)
    * @param repository_url The url of the repository
    * @param revision The svn or git revision of the extension
    * @param slicer_revision The revision of Slicer that the extension was built against
@@ -135,11 +141,14 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param packagetype Installer, data, etc
    * @param productname The product name (Ex: Slicer)
    * @param codebase The codebase name (Ex: Slicer4)
+   * @param description Text describing the extension
    * @param release (Optional) Release identifier (Ex: 0.0.1, 0.0.2, 0.1)
    * @param icon_url (Optional) The url of the icon for the extension
    * @param development_status (Optional) Arbitrary description of the status of the extension (stable, active, etc)
    * @param category (Optional) Category under which to place the extension. Subcategories should be delimited by . character.
                                 If none is passed, will render under the Miscellaneous category.
+   * @param enabled (Optional) Boolean indicating if the extension should be automatically enabled after its installation
+   * @param homepage (Optional) The url of the extension homepage
    * @return Status of the upload
    */
   public function extensionUpload($args)
@@ -148,12 +157,14 @@ class Slicerpackages_ApiComponent extends AppComponent
                             'arch',
                             'name',
                             'revision',
+                            'repository_type',
                             'repository_url',
                             'slicer_revision',
                             'submissiontype',
                             'packagetype',
                             'productname',
-                            'codebase'), $args);
+                            'codebase',
+                            'description'), $args);
 
     $userDao = $this->_getUser($args);
     if($userDao === false)
@@ -203,10 +214,12 @@ class Slicerpackages_ApiComponent extends AppComponent
     $extensionDao->setOs($args['os']);
     $extensionDao->setArch($args['arch']);
     $extensionDao->setRevision($args['revision']);
+    $extensionDao->setRepositoryType($args['repository_type']);
     $extensionDao->setRepositoryUrl($args['repository_url']);
     $extensionDao->setSlicerRevision($args['slicer_revision']);
     $extensionDao->setProductname($args['productname']);
     $extensionDao->setCodebase($args['codebase']);
+    $extensionDao->setDescription($args['description']);
     if(array_key_exists('release', $args))
       {
       $extensionDao->setRelease($args['release']);
@@ -223,6 +236,15 @@ class Slicerpackages_ApiComponent extends AppComponent
       {
       $extensionDao->setCategory($args['category']);
       }
+    if(array_key_exists('enabled', $args))
+      {
+      $extensionDao->setEnabled($args['enabled']);
+      }
+    if(array_key_exists('homepage', $args))
+      {
+      $extensionDao->setHomepage($args['homepage']);
+      }
+
     $extensionModel->save($extensionDao);
 
     return array('extension' => $extensionDao);
