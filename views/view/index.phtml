@@ -32,9 +32,7 @@ $this->headScript()->appendFile(
 <?php
   $osMapping = array('win' => 'Windows', 'macosx' => 'Mac OSX', 'linux' => 'GNU/Linux');
   $archMapping = array('i386' => '32-bit', 'amd64' => '64-bit');
-  if(!$this->deprecatedLayout)
-    {
-    echo '  <div class="last-updated" style="float:right;">Last updated: '.$this->lastupdated.'</div>';
+  echo '  <div class="last-updated" style="float:right;">Last updated: '.$this->lastupdated.'</div>';
 ?>
   <div class="spacer"></div>
   <!-- Designed inspired from http://search.npmjs.org/ -->
@@ -125,33 +123,6 @@ $this->headScript()->appendFile(
   <div class="spacer"></div>
   <h3>License</h3>
   <div class="paragraph">3D Slicer is open source software, available for free and without restrictions of use. Slicer3 and Slicer4 are distributed under a BSD-style license with some changes specific to the healthcare environment.</div>
-<?php
-    }
-  else
-    {
-    $firstReleaseFolder = true;
-    foreach($this->packageSets as $releaseName => $packageSuperset)
-      {
-      echo '<div class="releaseFolder'.($firstReleaseFolder ? ' firstReleaseFolder' : '').'">';
-      echo '  <h3>'.$releaseName.'</h3>';
-      foreach($packageSuperset as $os => $packageSet)
-        {
-        echo '  <div class="packageTile">';
-        echo '    <div class="packageOS '.$os.'">'.$osMapping[$os].'</div>';
-        echo '    <ul class="packageLinks">';
-        foreach($packageSet as $name => $package)
-          {
-          echo '    <li><a href='.$this->webroot.'/download/?items='.$package->getItemId().'>Download '.$archMapping[$package->getArch()].'</a></li>';
-          }
-        echo '    </ul>';
-        echo '  </div>';
-        }
-      $firstReleaseFolder = false;
-      echo '</div>';
-      }
-    }
-?>
-  <div id="styleswitch"><a href="?deprecatedLayout=true">old style</a> | <a href="?deprecatedLayout=false">new style</a></div>
 </div>
 
 <?php echo $this->render('index/viewsidebar.phtml'); ?>

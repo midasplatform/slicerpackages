@@ -4,11 +4,6 @@ div.viewMain h3, .last-updated {
   margin-bottom: 0px;
 }
 
-#styleswitch {
-  margin-top: 0.5em;
-  float:right;
-}
-
 /* TODO a paragraph class should probably be defined in MIDAS core */
 div.paragraph {
   margin-top: 1em;

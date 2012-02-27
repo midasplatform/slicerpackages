@@ -42,43 +42,6 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
     return $breadcrumb;
     }
 
-  private function _collectReleasesByFolder(&$releaseSets, $packagetype, $folderDaos)
-    {
-    $daoName = 'Slicerpackages_'.$packagetype;
-    $packageDao = $this->$daoName;
-
-    if(!is_array($folderDaos))
-      {
-      $folderDaos = array($folderDaos);
-      }
-
-    foreach($folderDaos as $folder)
-      {
-      foreach($folder->getItems() as $item)
-        {
-        $package = $packageDao->getByItemId($item->getKey());
-        $release = $package->getRelease();
-        if (!empty($release))
-          {
-          if(!isset($releaseSets[$release]))
-            {
-            $releaseSets[$release] = array();
-            }
-          if(!isset($releaseSets[$release][$package->getOs()]))
-            {
-            $releaseSets[$release][$package->getOs()] = array();
-            }
-          if(!isset($releaseSets[$release][$package->getOs()][$item->getName()]))
-            {
-            $releaseSets[$release][$package->getOs()][$item->getName()] = array();
-            }
-
-          $releaseSets[$release][$package->getOs()][$item->getName()] = $package;
-          }
-        }
-      }
-    }
-
   private function _collectPackage(&$releaseSets, $releaseName, $packageDao, $itemDao = null)
     {
     if(!$itemDao instanceof ItemDao)
@@ -204,53 +167,42 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
     $this->view->header = $this->_breadcrumb();
     $this->view->nPackages = $this->Slicerpackages_Package->getCountAll();
 
-    $this->view->deprecatedLayout = $this->getRequest()->getParam("deprecatedLayout", false);
-    $this->view->deprecatedLayout = $this->view->deprecatedLayout == 'true' ? true : false;
     $folderDaos = array(
       $this->_getPackageFolder('Package', 'nightly'),
       $this->_getPackageFolder('Package', 'experimental'));
-    if($this->view->deprecatedLayout)
+
+    $packageSetsByOs = array();
+    $this->_collectReleases($packageSetsByOs, 'Package', $folderDaos);
+    $this->_collectLatest($packageSetsByOs, 'Package', $folderDaos, self::LatestCategoryText);
+    foreach($packageSetsByOs as $os => &$packageSuperset)
       {
-      $packageSets = array();
-      $this->_collectReleasesByFolder($packageSets, 'Package', $folderDaos);
-      uksort($packageSets, 'version_compare');
-      $this->view->packageSets = array_reverse($packageSets, true);
+      uksort($packageSuperset, 'version_compare');
+      $packageSuperset = array_reverse($packageSuperset, true);
+      foreach($packageSuperset as $arch => &$packageSet)
+        {
+        ksort($packageSet);
+        }
+        // The following code enforce the 'self::LatestCategoryText' category to be at the top
+//        $packageSupersetKeys = array_keys($packageSuperset);
+//        if($packageSupersetKeys[count($packageSupersetKeys) - 1] == self::LatestCategoryText)
+//          {
+//          $packageSuperset = array(self::LatestCategoryText => array_pop($packageSuperset)) + $packageSuperset;
+//          }
+      }
+
+    $mostRecentCreatedItem = $this->Slicerpackages_Package->getMostRecentCreatedItem($folderDaos);
+    if(array_key_exists('date_creation', $mostRecentCreatedItem))
+      {
+      $this->view->lastupdated =  $this->Component->Date->ago($mostRecentCreatedItem['date_creation']);
       }
     else
       {
-      $packageSetsByOs = array();
-      $this->_collectReleases($packageSetsByOs, 'Package', $folderDaos);
-      $this->_collectLatest($packageSetsByOs, 'Package', $folderDaos, self::LatestCategoryText);
-      foreach($packageSetsByOs as $os => &$packageSuperset)
-        {
-        uksort($packageSuperset, 'version_compare');
-        $packageSuperset = array_reverse($packageSuperset, true);
-        foreach($packageSuperset as $arch => &$packageSet)
-          {
-          ksort($packageSet);
-          }
-          // The following code enforce the 'self::LatestCategoryText' category to be at the top
-  //        $packageSupersetKeys = array_keys($packageSuperset);
-  //        if($packageSupersetKeys[count($packageSupersetKeys) - 1] == self::LatestCategoryText)
-  //          {
-  //          $packageSuperset = array(self::LatestCategoryText => array_pop($packageSuperset)) + $packageSuperset;
-  //          }
-        }
-
-      $mostRecentCreatedItem = $this->Slicerpackages_Package->getMostRecentCreatedItem($folderDaos);
-      if(array_key_exists('date_creation', $mostRecentCreatedItem))
-        {
-        $this->view->lastupdated =  $this->Component->Date->ago($mostRecentCreatedItem['date_creation']);
-        }
-      else
-        {
-        $this->view->lastupdated = 'NA';
-        }
-
-      $this->_initializeOsAndArchMap($this->moduleName, $this->view);
-      $this->view->packageSetsByOs = $packageSetsByOs;
-      $this->view->latestCategoryText = self::LatestCategoryText;
+      $this->view->lastupdated = 'NA';
       }
+
+    $this->_initializeOsAndArchMap($this->moduleName, $this->view);
+    $this->view->packageSetsByOs = $packageSetsByOs;
+    $this->view->latestCategoryText = self::LatestCategoryText;
     }
 
   /** Admin action */
