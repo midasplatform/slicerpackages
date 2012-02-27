@@ -116,7 +116,7 @@ class Slicerpackages_ApiComponent extends AppComponent
                          'description' => $dao->getDescription(),
                          'screenshots' => $dao->getScreenshots(),
                          'contributors' => $dao->getContributors(),
-                         'homepage' => $dao->getDescription(),
+                         'homepage' => $dao->getHomepage(),
                          'enabled' => $dao->getEnabled(),
                          'codebase' => $dao->getCodebase(),
                          'release' => $dao->getRelease(),
