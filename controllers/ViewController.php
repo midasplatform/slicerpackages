@@ -75,8 +75,8 @@ class Slicerpackages_ViewController extends Slicerpackages_AppController
         'arch' => $packageDao->getArch(),
         'os' => $packageDao->getOs()
         );
-      $releaseSets[$os][$releaseName][$arch]['extensioncount'] =
-        count($this->Slicerpackages_Extension->get($getExtensionsFilter));
+      $matches = $this->Slicerpackages_Extension->get($getExtensionsFilter);
+      $releaseSets[$os][$releaseName][$arch]['extensioncount'] = $matches['total'];
       }
     $bitstreams = $this->Item->getLastRevision($itemDao)->getBitstreams();
     $releaseSets[$os][$releaseName][$arch]['checksum'] =strtoupper($bitstreams[0]->getChecksum());

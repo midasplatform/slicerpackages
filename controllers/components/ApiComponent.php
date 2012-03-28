@@ -91,7 +91,8 @@ class Slicerpackages_ApiComponent extends AppComponent
     $extensionsModel->loadDaoClass('ExtensionDao', 'slicerpackages');
     $itemModel = $modelLoad->loadModel('Item');
 
-    $daos = $extensionsModel->get($args);
+    $extensions = $extensionsModel->get($args);
+    $daos = $extensions['extensions'];
     $results = array();
 
     foreach($daos as $dao)

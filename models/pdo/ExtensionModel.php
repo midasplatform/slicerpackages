@@ -22,7 +22,8 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
    *               'submissiontype', 'packagetype', 'slicer_revision', 'revision',
    *               'productname', 'codebase', 'release' and 'category'.
    *               Can also specify 'order', 'direction', 'limit', and 'offset'.
-   * @return Array of Slicer extension Daos
+   * @return array('extensions' => list of matching extensions,
+   *               'total' => number of total matching extensions
    */
   function get($params = array('extension_id' => 'any', 'os' => 'any', 'arch' => 'any',
                                'submissiontype' => 'any', 'packagetype' => 'any',
@@ -31,23 +32,29 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
                                'release' => 'any', 'category' => 'any'))
     {
     $sql = $this->database->select();
+    $sqlCount = $this->database->select()
+                     ->from(array($this->_name), array('count' => 'count(*)'));
     foreach(array('extension_id', 'os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release', 'category') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
         if($option == 'category') //category searches by prefix
           {
-          $sql->where("slicerpackages_extension.category = '".$params['category']
-                      ."' OR slicerpackages_extension.category LIKE '".$params['category'].".%'");
+          $filterClause = "slicerpackages_extension.category = '".$params['category']
+                      ."' OR slicerpackages_extension.category LIKE '".$params['category'].".%'";
+          $sql->where($filterClause);
+          $sqlCount->where($filterClause);
           }
         else
           {
           $fieldname = $option;
           if($option == 'extension_id')
             {
-            $fieldname = 'slicerpackages_' . $option;
+            $fieldname = 'slicerpackages_'.$option;
             }
-          $sql->where('slicerpackages_extension.'.$fieldname.' = ?', $params[$option]);
+          $filterClause = 'slicerpackages_extension.'.$fieldname.' = ?';
+          $sql->where($filterClause, $params[$option]);
+          $sqlCount->where($filterClause, $params[$option]);
           }
         }
       }
@@ -68,7 +75,8 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       $tmpDao = $this->initDao('Extension', $row, 'slicerpackages');
       $rowsetAnalysed[] = $tmpDao;
       }
-    return $rowsetAnalysed;
+    $countRow = $this->database->fetchRow($sqlCount);
+    return array('extensions' => $rowsetAnalysed, 'total' => $countRow['count']);
     }
 
   /** get all extension records */
