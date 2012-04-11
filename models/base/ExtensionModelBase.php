@@ -57,4 +57,38 @@ abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
   public abstract function getAllCategories();
   public abstract function getAllReleases();
 
+  /**
+   * If an extension already exists that matches the given
+   * extension metadata, it is returned.  Otherwise, returns null.
+   */
+  public function matchExistingExtension($params)
+    {
+    // Only filter by a subset of the parameters
+    $results = $this->get(array(
+      'os' => $params['os'],
+      'arch' => $params['arch'],
+      'repository_type' => $params['repository_type'],
+      'revision' => $params['revision'],
+      'slicer_revision' => $params['slicer_revision'],
+      'packagetype' => $params['packagetype'],
+      'codebase' => $params['codebase'],
+      'productname' => $params['productname']));
+    if($results['total'] == 0)
+      {
+      return null;
+      }
+    else
+      {
+      $match = $results['extensions'][0];
+      if($match->getItem()->getName() != $params['name'])
+        {
+        return null;
+        }
+      else
+        {
+        return $match;
+        }
+      }
+    }
+
 } // end class Slicerpackages_ExtensionModelBase

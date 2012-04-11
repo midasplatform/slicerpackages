@@ -203,17 +203,27 @@ class Slicerpackages_ApiComponent extends AppComponent
       unlink($tmpfile);
       throw new Exception('Invalid policy on folder '.$folderId, -1);
       }
+    
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
-    $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
-
-    if(!$item)
-      {
-      throw new Exception('Failed to create item', -1);
-      }
     $extensionModel = $modelLoader->loadModel('Extension', 'slicerpackages');
-    $extensionModel->loadDaoClass('ExtensionDao', 'slicerpackages');
-    $extensionDao = new Slicerpackages_ExtensionDao();
+    $extensionDao = $extensionModel->matchExistingExtension($args);
+    if($extensionDao == null)
+      {
+      $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
+      if(!$item)
+        {
+        throw new Exception('Failed to create item', -1);
+        }
+      $extensionModel->loadDaoClass('ExtensionDao', 'slicerpackages');
+      $extensionDao = new Slicerpackages_ExtensionDao();
+      }
+    else
+      {
+      $item = $extensionDao->getItem();
+      $uploadComponent->createNewRevision($userDao, $args['name'], $tmpfile, '', $item->getKey());
+      }
+
     $extensionDao->setItemId($item->getKey());
     $extensionDao->setSubmissiontype($args['submissiontype']);
     $extensionDao->setPackagetype($args['packagetype']);
