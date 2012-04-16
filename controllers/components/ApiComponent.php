@@ -211,6 +211,14 @@ class Slicerpackages_ApiComponent extends AppComponent
     if($extensionDao == null)
       {
       $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
+
+      // Set the revision comment to the extension's revision
+      $itemModel = $modelLoader->loadModel('Item');
+      $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+      $itemRevision = $itemModel->getLastRevision($item);
+      $itemRevision->setChanges($args['revision']);
+      $itemRevisionModel->save($itemRevision);
+
       if(!$item)
         {
         throw new Exception('Failed to create item', -1);
@@ -221,7 +229,7 @@ class Slicerpackages_ApiComponent extends AppComponent
     else
       {
       $item = $extensionDao->getItem();
-      $uploadComponent->createNewRevision($userDao, $args['name'], $tmpfile, '', $item->getKey());
+      $uploadComponent->createNewRevision($userDao, $args['name'], $tmpfile, $args['revision'], $item->getKey());
       }
 
     $extensionDao->setItemId($item->getKey());

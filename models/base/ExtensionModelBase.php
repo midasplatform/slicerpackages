@@ -68,7 +68,6 @@ abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
       'os' => $params['os'],
       'arch' => $params['arch'],
       'repository_type' => $params['repository_type'],
-      'revision' => $params['revision'],
       'slicer_revision' => $params['slicer_revision'],
       'packagetype' => $params['packagetype'],
       'codebase' => $params['codebase'],
