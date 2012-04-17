@@ -103,7 +103,8 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
     }
 
   /**
-   * Return a list of all distinct categories
+   * Return a list of all distinct categories of all the extensions
+   * in the database
    */
   public function getAllCategories()
     {
@@ -115,9 +116,13 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
     $rowset = $this->database->fetchAll($sql);
     foreach($rowset as $row)
       {
-      $categories[] = $row['category'];
+      $categoryList = explode(';', $row['category']);
+      foreach($categoryList as $category)
+        {
+        $categories[$category] = 1;
+        }
       }
-    return $categories;
+    return array_keys($categories);
     }
 
   /**
