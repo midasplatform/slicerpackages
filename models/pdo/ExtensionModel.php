@@ -38,10 +38,16 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
         {
-        if($option == 'category') //category searches by prefix
+        if($option == 'category') //category searches by prefix and among a list of categories
           {
-          $filterClause = "slicerpackages_extension.category = '".$params['category']
-                      ."' OR slicerpackages_extension.category LIKE '".$params['category'].".%'";
+          $category = $params['category'];
+          $filterClause = "slicerpackages_extension.category = '".$category."'"
+                      ." OR slicerpackages_extension.category LIKE '".$category.".%'"
+                      ." OR slicerpackages_extension.category LIKE '".$category.";%'"
+                      ." OR slicerpackages_extension.category LIKE '%;".$category.".%'"
+                      ." OR slicerpackages_extension.category LIKE '%;".$category.";%'"
+                      ." OR slicerpackages_extension.category LIKE '%;".$category."'";
+
           $sql->where($filterClause);
           $sqlCount->where($filterClause);
           }
