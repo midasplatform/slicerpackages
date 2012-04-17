@@ -78,14 +78,7 @@ abstract class Slicerpackages_ExtensionModelBase extends Slicerpackages_AppModel
       }
     else
       {
-      foreach($results['extensions'] as $extension)
-        {
-        if($extension->getItem()->getName() == $params['name'])
-          {
-          return $extension;
-          }
-        }
-      return null;
+      return $results['extensions'][0];
       }
     }
 
