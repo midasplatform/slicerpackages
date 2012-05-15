@@ -31,13 +31,15 @@ class Slicerpackages_ConfigForm extends AppForm
     $packagesNightlyFolder = new Zend_Form_Element_Text('packagesnightlyfolder');
     $packagesExperimentalFolder = new Zend_Form_Element_Text('packagesexperimentalfolder');
     $extensionsNightlyFolder = new Zend_Form_Element_Text('extensionsnightlyfolder');
+    $extensionsContinuousFolder = new Zend_Form_Element_Text('extensionscontinuousfolder');
     $extensionsExperimentalFolder = new Zend_Form_Element_Text('extensionsexperimentalfolder');
 
     $submit = new Zend_Form_Element_Submit('submitConfig');
     $submit->setLabel('Save configuration');
 
     $form->addElements(array($packagesNightlyFolder, $packagesExperimentalFolder,
-                             $extensionsNightlyFolder, $extensionsExperimentalFolder, $submit));
+                             $extensionsNightlyFolder, $extensionsContinuousFolder,
+                             $extensionsExperimentalFolder, $submit));
     return $form;
     }
 

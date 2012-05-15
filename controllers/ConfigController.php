@@ -34,10 +34,12 @@ class Slicerpackages_ConfigController extends Slicerpackages_AppController
 
     $modelLoader = new MIDAS_ModelLoader();
     $settingModel = $modelLoader->loadModel('Setting');
-    
+
     $packagesNightlyFolder = $settingModel->getValueByName('packages.nightly.folder', $this->moduleName);
     $packagesExperimentalFolder = $settingModel->getValueByName('packages.experimental.folder', $this->moduleName);
+
     $extensionsNightlyFolder = $settingModel->getValueByName('extensions.nightly.folder', $this->moduleName);
+    $extensionsContinuousFolder = $settingModel->getValueByName('extensions.continuous.folder', $this->moduleName);
     $extensionsExperimentalFolder = $settingModel->getValueByName('extensions.experimental.folder', $this->moduleName);
 
     $configForm = $this->ModuleForm->Config->createConfigForm();
@@ -55,6 +57,10 @@ class Slicerpackages_ConfigController extends Slicerpackages_AppController
       {
       $formArray['extensionsnightlyfolder']->setValue($extensionsNightlyFolder);
       }
+    if($extensionsContinuousFolder)
+      {
+      $formArray['extensionscontinuousfolder']->setValue($extensionsContinuousFolder);
+      }
     if($extensionsExperimentalFolder)
       {
       $formArray['extensionsexperimentalfolder']->setValue($extensionsExperimentalFolder);
@@ -71,6 +77,7 @@ class Slicerpackages_ConfigController extends Slicerpackages_AppController
         $settingModel->setConfig('packages.nightly.folder', $this->_getParam('packagesnightlyfolder'), $this->moduleName);
         $settingModel->setConfig('packages.experimental.folder', $this->_getParam('packagesexperimentalfolder'), $this->moduleName);
         $settingModel->setConfig('extensions.nightly.folder', $this->_getParam('extensionsnightlyfolder'), $this->moduleName);
+        $settingModel->setConfig('extensions.continuous.folder', $this->_getParam('extensionscontinuousfolder'), $this->moduleName);
         $settingModel->setConfig('extensions.experimental.folder', $this->_getParam('extensionsexperimentalfolder'), $this->moduleName);
 
         echo JsonComponent::encode(array(true, 'Changes saved'));
