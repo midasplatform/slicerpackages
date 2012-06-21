@@ -99,6 +99,10 @@ class Slicerpackages_ApiComponent extends AppComponent
       {
       $revision = $itemModel->getLastRevision($dao->getItem());
       $bitstreams = $revision->getBitstreams();
+      if(count($bitstreams) == 0)
+        {
+        continue;
+        }
       $bitstream = $bitstreams[0];
 
       $results[] = array('extension_id' => $dao->getKey(),
