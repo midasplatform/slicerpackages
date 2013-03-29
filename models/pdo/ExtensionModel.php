@@ -103,6 +103,44 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
     }
 
   /**
+   * Return a category list for *all* categories in the database, and corresponding counts
+   * filtered by a parameter array
+   * @param params The filter array
+   * @return An array whose keys are single categories and whose values are corresponding filtered counts
+   */
+  public function getCategoriesWithCounts($params)
+    {
+    // First build an array of all valid categories
+    $allCategories = $this->getAllCategories();
+    $categoryCounts = array();
+    foreach($allCategories as $category)
+      {
+      $categoryCounts[$category] = 0;
+      }
+
+    // Now use group by query to get the filtered counts for each category
+    $sql = $this->database->select()->setIntegrityCheck(false)
+                ->from('slicerpackages_extension', array('category' => 'category', 'count' => 'count(*)'));
+    foreach($params as $key => $value)
+      {
+      $sql->where($key.' = ?', $value);
+      }
+    $sql->group('category');
+
+    $rows = $this->database->fetchAll($sql);
+    foreach($rows as $row)
+      {
+      $categoryList = explode(';', $row['category']);
+      foreach($categoryList as $category)
+        {
+        $categoryCounts[$category] += $row['count'];
+        }
+      }
+    return $categoryCounts;
+    }
+
+
+  /**
    * Return a list of all distinct categories of all the extensions
    * in the database
    */
