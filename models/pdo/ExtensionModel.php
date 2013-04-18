@@ -125,6 +125,7 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
       {
       $sql->where($key.' = ?', $value);
       }
+    $sql->where('category != ?', '');
     $sql->group('category');
 
     $rows = $this->database->fetchAll($sql);
