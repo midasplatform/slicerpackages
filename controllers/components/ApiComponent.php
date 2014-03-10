@@ -86,6 +86,7 @@ class Slicerpackages_ApiComponent extends AppComponent
    * @param slicer_revision (Optional) The slicer revision the package was built against
    * @param release (Optional) Release identifier associated with a package.
    If not set, it will return both released and non-released packages.
+   * @param search (Optional) Text matched against extension name or description.
    * @param order (Optional) What parameter to order results by (revision | packagetype | submissiontype | arch | os)
    * @param direction (Optional) What direction to order results by (asc | desc).  Default asc
    * @param limit (Optional) Limit result count. Must be a positive integer.

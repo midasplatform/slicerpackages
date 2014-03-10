@@ -29,11 +29,19 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
                                'submissiontype' => 'any', 'packagetype' => 'any',
                                'slicer_revision' => 'any', 'revision' => 'any',
                                'productname' => 'any', 'codebase' => 'any',
-                               'release' => 'any', 'category' => 'any'))
+                               'release' => 'any', 'category' => 'any', 'search' => ''))
     {
     $sql = $this->database->select();
     $sqlCount = $this->database->select()
                      ->from(array($this->_name), array('count' => 'count(*)'));
+    if(array_key_exists('search', $params) && $params['search'] != '')
+      {
+      $filterClause = "slicerpackages_extension.productname LIKE ?"
+                  ." OR slicerpackages_extension.description LIKE ?";
+      $pattern = '%'.$params['search'].'%';
+      $sql->where($filterClause, $pattern);
+      $sqlCount->where($filterClause, $pattern);
+      }
     foreach(array('extension_id', 'os', 'arch', 'submissiontype', 'packagetype', 'revision', 'slicer_revision', 'productname', 'codebase', 'release', 'category') as $option)
       {
       if(array_key_exists($option, $params) && $params[$option] != 'any')
@@ -123,7 +131,15 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
                 ->from('slicerpackages_extension', array('category' => 'category', 'count' => 'count(*)'));
     foreach($params as $key => $value)
       {
-      $sql->where($key.' = ?', $value);
+      if($key == 'search')
+        {
+        $filterClause = "productname LIKE ? OR description LIKE ?";
+        $sql->where($filterClause, '%'.$value.'%');
+        }
+      else
+        {
+        $sql->where($key.' = ?', $value);
+        }
       }
     $sql->where('category != ?', '');
     $sql->group('category');
