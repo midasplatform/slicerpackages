@@ -16,6 +16,8 @@ require_once BASE_PATH.'/modules/slicerpackages/models/base/ExtensionModelBase.p
  */
 class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
 {
+  static $excludeCategories;
+
   /**
    * Return all the records in the table
    * @param params Optional associative array specifying 'extension_id', 'os', 'arch',
@@ -70,6 +72,15 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
           $sql->where($filterClause, $params[$option]);
           $sqlCount->where($filterClause, $params[$option]);
           }
+        }
+      }
+    if(!array_key_exists('category', $params) || $params['category'] == 'any')
+      {
+      foreach(self::$excludeCategories as $exclude)
+        {
+        $filterClause = "NOT slicerpackages_extension.category LIKE ?";
+        $sql->where($filterClause, $exclude);
+        $sqlCount->where($filterClause, $exclude);
         }
       }
     if(array_key_exists('order', $params))
@@ -198,3 +209,5 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
     return $releases;
     }
 }  // end class
+
+Slicerpackages_ExtensionModel::$excludeCategories = array('examples');
