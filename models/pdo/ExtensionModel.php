@@ -74,7 +74,8 @@ class Slicerpackages_ExtensionModel extends Slicerpackages_ExtensionModelBase
           }
         }
       }
-    if(!array_key_exists('category', $params) || $params['category'] == 'any')
+    if(!(array_key_exists('category', $params) && $params['category'] != 'any') &&
+       !(array_key_exists('extension_id', $params) || array_key_exists('productname', $params)))
       {
       foreach(self::$excludeCategories as $exclude)
         {
