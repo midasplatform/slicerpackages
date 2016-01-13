@@ -31,7 +31,8 @@ class Slicerpackages_IndexCoreController extends Slicerpackages_AppController
   /** index action that redirects to the plugin index */
   function indexAction()
     {
-    $this->_redirect('/slicerpackages/view');
+    // 274: Corresponds to folder "Public/Slicer/Packages/Application/Release"
+    $this->_redirect('/folder/274');
     } // end method indexAction
 
 }//end class
