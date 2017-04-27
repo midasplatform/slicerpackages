@@ -54,6 +54,12 @@ abstract class Slicerpackages_PackageModelBase extends Slicerpackages_AppModel
    */
   abstract function getMostRecentCreatedItem($folderDaos);
 
+  /** Get the last created package's revision number.
+   * @param Array $folderDaos List of FolderDaos containing the packages to consider.
+   * @return Revision string if the most recent package was not returned as null. 
+   */
+  abstract function getMostRecentRevision($folderDaos);
+
   /** Get the last created packages belonging to the provided FolderDaos and matching operatingSystems.
    * @param Array $folderDaos List of FolderDaos containing the packages to consider.
    * @param string|array $operatingSystems If no operating system is specified, all operating
