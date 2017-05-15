@@ -70,6 +70,23 @@ class Slicerpackages_PackageModel extends Slicerpackages_PackageModelBase
     return $dao;
     }
 
+  /**
+   * Return the most recently created package's revision number.
+   */
+  public function getMostRecentRevision($folderDaos)
+    {
+    $mostRecentPackage = $this->getMostRecentCreatedItem($folderDaos);
+    $revision = '';
+    if(!empty($mostRecentPackage))
+      {
+      $revision='d';
+      $sql = $this->database->select()->where('package_id = ?', $mostRecentPackage['package_id']);
+      $row = $this->database->fetchRow($sql);
+      $revision=$row['revision'];
+      }
+    return $revision;
+    }
+
   private function _getMostRecentCreatedPackages($folderDaos, $operatingSystems = array(), $architectures = array())
     {
     if(!is_array($folderDaos))
