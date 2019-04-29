@@ -265,10 +265,11 @@ class Slicerpackages_ApiComponent extends AppComponent
       {
       $extensionDao->setIconUrl($args['icon_url']);
       }
-    if(array_key_exists('development_status', $args))
+    if(!array_key_exists('development_status', $args))
       {
-      $extensionDao->setDevelopmentStatus($args['development_status']);
+      $args['development_status'] = '';
       }
+    $extensionDao->setDevelopmentStatus($args['development_status']);
     if(array_key_exists('category', $args))
       {
       $extensionDao->setCategory($args['category']);
