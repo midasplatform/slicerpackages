@@ -191,13 +191,17 @@ class Slicerpackages_ApiComponent extends AppComponent
       throw new Exception('Invalid user authentication', -1);
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
+
     $tmpfile = $this->_readUploadedFile('slicerextension');
 
     $modelLoader = new MIDAS_ModelLoader();
     $settingModel = $modelLoader->loadModel('Setting');
     $folderModel = $modelLoader->loadModel('Folder');
     $key = 'extensions.'.$args['submissiontype'].'.folder';
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $folderId = $settingModel->getValueByName($key, 'slicerpackages');
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
 
     if(!$folderId || !is_numeric($folderId))
       {
@@ -220,31 +224,46 @@ class Slicerpackages_ApiComponent extends AppComponent
     $componentLoader = new MIDAS_ComponentLoader();
     $uploadComponent = $componentLoader->loadComponent('Upload');
     $extensionModel = $modelLoader->loadModel('Extension', 'slicerpackages');
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $extensionDao = $extensionModel->matchExistingExtension($args);
+
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     if($extensionDao == null)
       {
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $item = $uploadComponent->createUploadedItem($userDao, $args['name'], $tmpfile, $folder);
 
       // Set the revision comment to the extension's revision
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itemModel = $modelLoader->loadModel('Item');
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itemRevisionModel = $modelLoader->loadModel('ItemRevision');
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itemRevision = $itemModel->getLastRevision($item);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itemRevision->setChanges($args['revision']);
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $itemRevisionModel->save($itemRevision);
 
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       if(!$item)
         {
         throw new Exception('Failed to create item', -1);
         }
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $extensionModel->loadDaoClass('ExtensionDao', 'slicerpackages');
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $extensionDao = new Slicerpackages_ExtensionDao();
       }
     else
       {
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $item = $extensionDao->getItem();
+      $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
       $uploadComponent->createNewRevision($userDao, $args['name'], $tmpfile, $args['revision'], $item->getKey());
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $extensionDao->setItemId($item->getKey());
     $extensionDao->setSubmissiontype($args['submissiontype']);
     $extensionDao->setPackagetype($args['packagetype']);
@@ -290,6 +309,7 @@ class Slicerpackages_ApiComponent extends AppComponent
       $extensionDao->setContributors($args['contributors']);
       }
 
+    $this->getLogger()->err("[".getmypid()."] ".basename(__FILE__)." - ".__FUNCTION__." - line:".__LINE__);
     $extensionModel->save($extensionDao);
 
     return array('extension' => $extensionDao);
